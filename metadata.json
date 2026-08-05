@@ -1,0 +1,6 @@
+{
+  "name": "InkProwl - Vintage 2D Comic Line Art Marketplace",
+  "description": "Curated 1960s vintage comic-style illustrations, anthropomorphic animal characters in bespoke tailored attire, and 4K/600DPI downloadable 2D line art assets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
