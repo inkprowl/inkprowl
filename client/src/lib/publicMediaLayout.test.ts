@@ -89,4 +89,16 @@ describe("public media layout contracts", () => {
     expect(mediaCss).toContain(".artwork-fullscreen-content .art-image");
     expect(mediaCss).toContain("object-fit: contain");
   });
+
+  it("keeps configured display banners dismissible in the header without reactivating Popunder code", () => {
+    const chrome = source("client/src/components/InkprowlChrome.tsx");
+    const advertisingCss = source("client/src/components/publicAdvertising.css");
+    const catalogue = source("client/src/data/catalog.ts");
+    expect(chrome).toContain("dismissible-header-ad");
+    expect(chrome).toContain("Hide header advertisement");
+    expect(chrome).toContain('placement="leaderboard-728x90"');
+    expect(chrome).toContain('placement="mobile-320x50"');
+    expect(advertisingCss).toContain(".dismissible-header-ad");
+    expect(catalogue).toContain('if (placement === "popunder") return false;');
+  });
 });

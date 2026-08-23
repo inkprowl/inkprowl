@@ -222,3 +222,6 @@
 - [x] Restore Native Banner, Social Bar, and between-grid advertising controls and placements; show enabled ads on individual artwork pages; and investigate unsafe advertiser-destination certificate warnings without treating third-party links as trusted.
 - [x] Repair artwork sharing so social-media links expose the individual artwork image, title, and description as a preview.
 - [x] Repair the mobile artwork zoom so an enlarged edition can be inspected at full scale and panned without being constrained to a small square stage; retain the Popunder code as stored but unmounted to prevent site-wide click redirects.
+- [ ] Confirm and implement an owner-approved visible click-only advertising option; retain the stored Popunder code unmounted because it cannot display as a safe visible ad without intercepting ordinary page clicks.
+- [ ] Document the Popunder format limitation: it has no visible creative and cannot be enabled as a display ad without restoring broad click-triggered external redirects.
+- [ ] Restore a visible, dismissible header advertising placement using a configured display-ad provider code while keeping the non-visual Popunder script unmounted.

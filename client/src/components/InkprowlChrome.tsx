@@ -3,7 +3,7 @@ import "./inkprowlMedia.css";
 import "./subjectSafeVideo.css";
 import { Download, Film, ListMusic, Menu, Minimize2, Music2, Pause, Play, Search, Volume2, X } from "lucide-react";
 import { useEffect, useRef, useState, type PointerEvent } from "react";
-import { siteBranding, siteMedia } from "@/data/catalog";
+import { advertisingSettings, getAdvertisementProviderCodes, siteBranding, siteMedia } from "@/data/catalog";
 import { AdSlot } from "@/components/ArtworkCard";
 import { publicNavigationItems } from "@/lib/publicNavigation";
 
@@ -19,6 +19,8 @@ export function Mark({ compact = false }: { compact?: boolean }) {
 export function Header({ showBannerAds = true }: { showBannerAds?: boolean }) {
   const [location] = useLocation();
   const [open, setOpen] = useState(false);
+  const [headerAdDismissed, setHeaderAdDismissed] = useState(false);
+  const hasConfiguredHeaderAd = (["header", "leaderboard-728x90", "mobile-320x50"] as const).some((placement) => getAdvertisementProviderCodes(placement, advertisingSettings).length > 0);
   return (
     <><header className="site-header">
       <div className="header-inner">
@@ -37,13 +39,13 @@ export function Header({ showBannerAds = true }: { showBannerAds?: boolean }) {
           </button>
         </div>
       </div>
-    </header><AdSlot placement="header" label="Header partner placement" />{showBannerAds && <AdSlot placement="leaderboard-728x90" label="728 × 90 partner banner" />}</>
+    </header>{showBannerAds && hasConfiguredHeaderAd && !headerAdDismissed && <section className="dismissible-header-ad" aria-label="Dismissible partner advertising"><div className="header-ad-toolbar"><span>PARTNER CONTENT</span><button type="button" onClick={() => setHeaderAdDismissed(true)} aria-label="Hide header advertisement">Hide <X size={13} /></button></div><div className="header-ad-units"><AdSlot placement="header" label="Header partner placement" /><AdSlot placement="leaderboard-728x90" label="728 × 90 partner banner" /><AdSlot placement="mobile-320x50" label="320 × 50 partner banner" /></div></section>}</>
   );
 }
 
 export function Footer({ showBannerAds = true }: { showBannerAds?: boolean }) {
   return (
-    <><AdSlot placement="footer" label="Footer partner placement" />{showBannerAds && <AdSlot placement="mobile-320x50" label="320 × 50 partner banner" />}<footer className="site-footer">
+    <><AdSlot placement="footer" label="Footer partner placement" /><footer className="site-footer">
       <div className="footer-top">
         <div>
           <Mark />
