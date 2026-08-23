@@ -16,7 +16,6 @@
 .provider-ad-code { max-width: 100%; pointer-events: auto; }
 .provider-ad-code > * { max-width: 100%; }
 .provider-ad-code iframe { display: block; max-width: 100%; margin-inline: auto; }
-.provider-ad-frame { width: 100%; height: 120px; border: 0; background: transparent; }
 
 .ad-slot-native-banner, .ad-slot-social-bar { min-height: 6rem; }
 .ad-slot-social-bar { margin-top: 0; }
