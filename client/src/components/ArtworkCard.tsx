@@ -1,7 +1,7 @@
 import { Download } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
-import { advertisingPlacementLabels, advertisingSettings, getAdvertisementProviderCodes, isAdvertisementPlacementEnabled, type AdvertisingPlacement, type Artwork } from "@/data/catalog";
+import { advertisingPlacementLabels, advertisingSettings, getAdvertisementProviderCodes, isAdvertisementPlacementEnabled, isAdvertisementPlacementRenderableAtViewport, type AdvertisingPlacement, type Artwork } from "@/data/catalog";
 import "./publicAdvertising.css";
 
 export function ArtworkVisual({ artwork, large = false, onImageError }: { artwork: Artwork; large?: boolean; onImageError?: () => void }) {
@@ -51,7 +51,16 @@ function ProviderCode({ provider, code, placement }: { provider: string; code: s
 }
 
 export function AdSlot({ placement, label = "Selected partner placement" }: { placement: AdvertisingPlacement; label?: string }) {
+  const [isMobileViewport, setIsMobileViewport] = useState(() => typeof window !== "undefined" && window.matchMedia("(max-width: 767px)").matches);
+  useEffect(() => {
+    const media = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobileViewport(media.matches);
+    update();
+    media.addEventListener("change", update);
+    return () => media.removeEventListener("change", update);
+  }, []);
   if (placement === "popunder") return null;
+  if (!isAdvertisementPlacementRenderableAtViewport(placement, isMobileViewport)) return null;
   if (!isAdvertisementPlacementEnabled(placement)) return null;
   const providerCodes = getAdvertisementProviderCodes(placement, advertisingSettings);
   if (!providerCodes.length) return null;

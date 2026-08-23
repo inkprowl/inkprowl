@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activeAdvertisementProviders, advertisingPlacements, advertisingSettings, artworks, availableDownloadFormats, categories, getAdvertisementProviderCodes, getArtwork, getArtworkShareUrl, getCloudinaryDownloadUrl, isAdvertisementPlacementEnabled, isApprovedClientDestination, isCloudinaryDeliveryUrl, isSafeVisibleAdsterraCode, publishedArtworks, relatedArtworks, siteBranding, siteMedia, sponsoredCampaign, validateArtworkMedia, validateOwnerConfiguration, validateSiteMedia } from "./catalog";
+import { activeAdvertisementProviders, advertisingPlacements, advertisingSettings, artworks, availableDownloadFormats, categories, getAdvertisementProviderCodes, getArtwork, getArtworkShareUrl, getCloudinaryDownloadUrl, isAdvertisementPlacementEnabled, isAdvertisementPlacementRenderableAtViewport, isApprovedClientDestination, isCloudinaryDeliveryUrl, isSafeVisibleAdsterraCode, publishedArtworks, relatedArtworks, siteBranding, siteMedia, sponsoredCampaign, validateArtworkMedia, validateOwnerConfiguration, validateSiteMedia } from "./catalog";
 
 describe("INKPROWL catalog", () => {
   it("contains all requested public browsing categories while honouring the owner-approved category rename", () => {
@@ -99,6 +99,14 @@ describe("INKPROWL catalog", () => {
       expect(isAdvertisementPlacementEnabled(placement, advertisingSettings)).toBe(false);
       expect(isAdvertisementPlacementEnabled(placement, { adsenseEnabled: false, adsterraEnabled: true, placements: { [placement]: true } })).toBe(true);
     }
+  });
+
+  it("mounts only the matching fixed-size provider banner for the active viewport", () => {
+    expect(isAdvertisementPlacementRenderableAtViewport("leaderboard-728x90", false)).toBe(true);
+    expect(isAdvertisementPlacementRenderableAtViewport("leaderboard-728x90", true)).toBe(false);
+    expect(isAdvertisementPlacementRenderableAtViewport("mobile-320x50", false)).toBe(false);
+    expect(isAdvertisementPlacementRenderableAtViewport("mobile-320x50", true)).toBe(true);
+    expect(isAdvertisementPlacementRenderableAtViewport("rectangle-300x250", true)).toBe(true);
   });
 
   it("uses the owner master switch to hide every placement without erasing saved code or placement choices", () => {

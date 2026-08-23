@@ -172,6 +172,13 @@ export const isAdvertisementPlacementEnabled = (placement: AdvertisingPlacement,
 export const isAdsterraVisiblePlacement = (placement: AdvertisingPlacement): placement is (typeof adsterraVisiblePlacements)[number] =>
   adsterraVisiblePlacements.includes(placement as (typeof adsterraVisiblePlacements)[number]);
 
+/** Fixed-size provider snippets share a global atOptions value, so only mount the banner that matches the active viewport. */
+export const isAdvertisementPlacementRenderableAtViewport = (placement: AdvertisingPlacement, isMobileViewport: boolean) => {
+  if (placement === "leaderboard-728x90") return !isMobileViewport;
+  if (placement === "mobile-320x50") return isMobileViewport;
+  return true;
+};
+
 /** Owner code always remains saved; snippets labelled as Popunder do not render in visible slots. */
 export const isSafeVisibleAdsterraCode = (code: string | undefined) => {
   const normalized = code?.trim().toLowerCase();
