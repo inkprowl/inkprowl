@@ -218,3 +218,4 @@
 - [x] Allow legitimate visible Adsterra snippets to save in their selected Admin code boxes without a blocking red format-validation error, while retaining master on/off behavior and no site-wide Popunder execution.
 - [x] Diagnose and repair visible advertising units that report failed fetch after owner code is saved, without erasing the saved snippets or advertising on/off settings.
 - [x] Configure and test the owner-provided Native Banner, Social Bar, 300×250, 728×90, and 320×50 visible advertising snippets in their matching public placements while retaining the Popunder code as an inactive stored configuration.
+- [x] Remove the Native Banner, Social Bar, and 300×250 Admin code boxes and public placeholders, and show the remaining enabled banner ads on individual artwork pages without obscuring the artwork or media controls.

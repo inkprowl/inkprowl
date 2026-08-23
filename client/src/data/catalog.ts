@@ -60,7 +60,10 @@ export type AdvertisingSettings = {
 
 export const advertisingPlacements = ["header", "social-native", "between-grid", "popunder", "footer", "native-banner", "social-bar", "rectangle-300x250", "leaderboard-728x90", "mobile-320x50"] as const;
 export type AdvertisingPlacement = (typeof advertisingPlacements)[number];
-export const adsterraVisiblePlacements = ["native-banner", "social-bar", "rectangle-300x250", "leaderboard-728x90", "mobile-320x50"] as const satisfies readonly AdvertisingPlacement[];
+/** Only the two banner sizes kept in the streamlined owner ads workspace. */
+export const adsterraVisiblePlacements: readonly AdvertisingPlacement[] = ["leaderboard-728x90", "mobile-320x50"];
+/** Legacy code remains preserved in the catalogue, but these are the only generic slots exposed to the owner editor. */
+export const ownerAdvertisingPlacements = ["header", "between-grid", "popunder", "footer"] as const satisfies readonly AdvertisingPlacement[];
 export const advertisingPlacementLabels: Record<AdvertisingPlacement, string> = {
   header: "Header banner",
   "social-native": "Social / native banner",
@@ -169,8 +172,8 @@ export const isAdvertisementPlacementEnabled = (placement: AdvertisingPlacement,
   return Boolean(configuredState) && activeAdvertisementProviders(settings).length > 0;
 };
 
-export const isAdsterraVisiblePlacement = (placement: AdvertisingPlacement): placement is (typeof adsterraVisiblePlacements)[number] =>
-  adsterraVisiblePlacements.includes(placement as (typeof adsterraVisiblePlacements)[number]);
+export const isAdsterraVisiblePlacement = (placement: AdvertisingPlacement) =>
+  ["native-banner", "social-bar", "rectangle-300x250", ...adsterraVisiblePlacements].includes(placement);
 
 /** Fixed-size provider snippets share a global atOptions value, so only mount the banner that matches the active viewport. */
 export const isAdvertisementPlacementRenderableAtViewport = (placement: AdvertisingPlacement, isMobileViewport: boolean) => {

@@ -16,7 +16,7 @@ export function Mark({ compact = false }: { compact?: boolean }) {
   );
 }
 
-export function Header() {
+export function Header({ showBannerAds = true }: { showBannerAds?: boolean }) {
   const [location] = useLocation();
   const [open, setOpen] = useState(false);
   return (
@@ -37,13 +37,13 @@ export function Header() {
           </button>
         </div>
       </div>
-    </header><AdSlot placement="header" label="Header partner placement" /><AdSlot placement="leaderboard-728x90" label="728 × 90 partner banner" /></>
+    </header><AdSlot placement="header" label="Header partner placement" />{showBannerAds && <AdSlot placement="leaderboard-728x90" label="728 × 90 partner banner" />}</>
   );
 }
 
-export function Footer() {
+export function Footer({ showBannerAds = true }: { showBannerAds?: boolean }) {
   return (
-    <><AdSlot placement="footer" label="Footer partner placement" /><AdSlot placement="mobile-320x50" label="320 × 50 partner banner" /><footer className="site-footer">
+    <><AdSlot placement="footer" label="Footer partner placement" />{showBannerAds && <AdSlot placement="mobile-320x50" label="320 × 50 partner banner" />}<footer className="site-footer">
       <div className="footer-top">
         <div>
           <Mark />
@@ -116,6 +116,6 @@ export function CloudinaryVideoPlayer({ src, title, className = "", clientUrl, c
   return <div className={`cloudinary-video ${className}`}><div className="video-ratio-frame"><video controls preload="metadata" playsInline aria-label={title}><source src={src} />Your browser does not support HTML5 video.</video></div>{clientUrl && <div className="video-controls-bar"><a href={clientUrl} target="_blank" rel="noreferrer sponsored" className="sponsor-visit-link">Visit {clientName || "client site"}</a></div>}</div>;
 }
 
-export function PageFrame({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
-  return <div className={`site-shell ${dark ? "dark-surface" : ""}`}><Header /><main>{children}</main><Footer /></div>;
+export function PageFrame({ children, dark = false, artworkPageAds = false }: { children: React.ReactNode; dark?: boolean; artworkPageAds?: boolean }) {
+  return <div className={`site-shell ${dark ? "dark-surface" : ""}`}><Header showBannerAds={!artworkPageAds} /><main>{children}</main><Footer showBannerAds={!artworkPageAds} /></div>;
 }

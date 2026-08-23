@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activeAdvertisementProviders, advertisingPlacements, advertisingSettings, artworks, availableDownloadFormats, categories, getAdvertisementProviderCodes, getArtwork, getArtworkShareUrl, getCloudinaryDownloadUrl, isAdvertisementPlacementEnabled, isAdvertisementPlacementRenderableAtViewport, isApprovedClientDestination, isCloudinaryDeliveryUrl, isSafeVisibleAdsterraCode, publishedArtworks, relatedArtworks, siteBranding, siteMedia, sponsoredCampaign, validateArtworkMedia, validateOwnerConfiguration, validateSiteMedia } from "./catalog";
+import { activeAdvertisementProviders, adsterraVisiblePlacements, advertisingPlacements, advertisingSettings, artworks, availableDownloadFormats, categories, getAdvertisementProviderCodes, getArtwork, getArtworkShareUrl, getCloudinaryDownloadUrl, isAdvertisementPlacementEnabled, isAdvertisementPlacementRenderableAtViewport, isApprovedClientDestination, isCloudinaryDeliveryUrl, isSafeVisibleAdsterraCode, publishedArtworks, relatedArtworks, siteBranding, siteMedia, sponsoredCampaign, validateArtworkMedia, validateOwnerConfiguration, validateSiteMedia } from "./catalog";
 
 describe("INKPROWL catalog", () => {
   it("contains all requested public browsing categories while honouring the owner-approved category rename", () => {
@@ -94,8 +94,9 @@ describe("INKPROWL catalog", () => {
     expect(isAdvertisementPlacementEnabled("popunder", { ...configuredPopunder, placements: { popunder: false } })).toBe(false);
   });
 
-  it("makes each requested visible Adsterra format an independent owner-controlled placement", () => {
-    for (const placement of ["native-banner", "social-bar", "rectangle-300x250", "leaderboard-728x90", "mobile-320x50"] as const) {
+  it("keeps only the remaining banner formats as independent owner-controlled visible placements", () => {
+    expect(adsterraVisiblePlacements).toEqual(["leaderboard-728x90", "mobile-320x50"]);
+    for (const placement of adsterraVisiblePlacements) {
       expect(isAdvertisementPlacementEnabled(placement, advertisingSettings)).toBe(false);
       expect(isAdvertisementPlacementEnabled(placement, { adsenseEnabled: false, adsterraEnabled: true, placements: { [placement]: true } })).toBe(true);
     }
@@ -106,7 +107,6 @@ describe("INKPROWL catalog", () => {
     expect(isAdvertisementPlacementRenderableAtViewport("leaderboard-728x90", true)).toBe(false);
     expect(isAdvertisementPlacementRenderableAtViewport("mobile-320x50", false)).toBe(false);
     expect(isAdvertisementPlacementRenderableAtViewport("mobile-320x50", true)).toBe(true);
-    expect(isAdvertisementPlacementRenderableAtViewport("rectangle-300x250", true)).toBe(true);
   });
 
   it("uses the owner master switch to hide every placement without erasing saved code or placement choices", () => {
@@ -114,14 +114,14 @@ describe("INKPROWL catalog", () => {
       advertisingEnabled: false,
       adsenseEnabled: false,
       adsterraEnabled: true,
-      placements: { "native-banner": true },
-      placementCodes: { "native-banner": { adsterra: '<script src="https://cdn.example.test/native.js"></script>' } },
+      placements: { "leaderboard-728x90": true },
+      placementCodes: { "leaderboard-728x90": { adsterra: '<script src="https://cdn.example.test/leaderboard.js"></script>' } },
     };
-    expect(settings.placementCodes["native-banner"]?.adsterra).toContain("native.js");
-    expect(settings.placements["native-banner"]).toBe(true);
-    expect(isAdvertisementPlacementEnabled("native-banner", settings)).toBe(false);
-    expect(getAdvertisementProviderCodes("native-banner", settings)).toEqual([]);
-    expect(isAdvertisementPlacementEnabled("native-banner", { ...settings, advertisingEnabled: true })).toBe(true);
+    expect(settings.placementCodes["leaderboard-728x90"]?.adsterra).toContain("leaderboard.js");
+    expect(settings.placements["leaderboard-728x90"]).toBe(true);
+    expect(isAdvertisementPlacementEnabled("leaderboard-728x90", settings)).toBe(false);
+    expect(getAdvertisementProviderCodes("leaderboard-728x90", settings)).toEqual([]);
+    expect(isAdvertisementPlacementEnabled("leaderboard-728x90", { ...settings, advertisingEnabled: true })).toBe(true);
   });
 
   it("accepts provider-hosted visible unit scripts while withholding only snippets explicitly marked as Popunder", () => {
@@ -134,24 +134,24 @@ describe("INKPROWL catalog", () => {
     const settings = {
       adsenseEnabled: false,
       adsterraEnabled: true,
-      placements: { "native-banner": true, "social-bar": true, popunder: true },
+      placements: { "leaderboard-728x90": true, "mobile-320x50": true, popunder: true },
       placementCodes: {
-        "native-banner": { adsterra: '<script src="https://cdn.example.test/native.js"></script>' },
+        "leaderboard-728x90": { adsterra: '<script src="https://cdn.example.test/leaderboard.js"></script>' },
         popunder: { adsterra: '<script src="https://cdn.example.test/popunder.js"></script>' },
       },
     };
-    expect(getAdvertisementProviderCodes("native-banner", settings)).toEqual([{ name: "Adsterra", code: '<script src="https://cdn.example.test/native.js"></script>' }]);
-    expect(getAdvertisementProviderCodes("social-bar", settings)).toEqual([]);
+    expect(getAdvertisementProviderCodes("leaderboard-728x90", settings)).toEqual([{ name: "Adsterra", code: '<script src="https://cdn.example.test/leaderboard.js"></script>' }]);
+    expect(getAdvertisementProviderCodes("mobile-320x50", settings)).toEqual([]);
     expect(getAdvertisementProviderCodes("popunder", settings)).toEqual([]);
   });
 
   it("keeps provider-hosted visible code available for its selected unit without relying on a provider domain allowlist", () => {
     const code = '<script async src="https://profitableratecpmnetwork.com/df1754d24286634e3299cded445fd34e/invoke.js"></script>';
-    const settings = { adsenseEnabled: false, adsterraEnabled: true, placements: { "native-banner": true }, placementCodes: { "native-banner": { adsterra: code } } };
-    expect(getAdvertisementProviderCodes("native-banner", settings)).toEqual([{ name: "Adsterra", code }]);
+    const settings = { adsenseEnabled: false, adsterraEnabled: true, placements: { "leaderboard-728x90": true }, placementCodes: { "leaderboard-728x90": { adsterra: code } } };
+    expect(getAdvertisementProviderCodes("leaderboard-728x90", settings)).toEqual([{ name: "Adsterra", code }]);
   });
 
-  it("keeps the owner’s existing social/native visible unit code eligible when the public ads master switch is on", () => {
+  it("keeps stored legacy social/native code intact while it is no longer an active visible-format slot", () => {
     const code = '<script async data-cfasync="false" src="https://pl30795920.profitableratecpmnetwork.com/c1f8260496fe21bbc3c50899238f0512/invoke.js"></script><div id="container-c1f8260496fe21bbc3c50899238f0512"></div>';
     const settings = { advertisingEnabled: true, adsenseEnabled: false, adsterraEnabled: true, placements: { "social-native": true }, placementCodes: { "social-native": { adsterra: code } } };
     expect(getAdvertisementProviderCodes("social-native", settings)).toEqual([{ name: "Adsterra", code }]);

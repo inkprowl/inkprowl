@@ -17,15 +17,11 @@
 .provider-ad-code > * { max-width: 100%; }
 .provider-ad-code iframe { display: block; max-width: 100%; margin-inline: auto; }
 
-.ad-slot-native-banner, .ad-slot-social-bar { min-height: 6rem; }
-.ad-slot-social-bar { margin-top: 0; }
-.ad-slot-rectangle-300x250 { width: min(100% - 2rem, 332px); min-height: 282px; }
 .ad-slot-leaderboard-728x90 { width: min(100% - 2rem, 760px); min-height: 122px; }
 .ad-slot-mobile-320x50 { width: min(100% - 2rem, 352px); min-height: 82px; }
-.ad-slot-rectangle-300x250 .provider-ad-frame { width: 300px; height: 250px; }
 .ad-slot-leaderboard-728x90 .provider-ad-frame { width: 728px; height: 90px; }
 .ad-slot-mobile-320x50 .provider-ad-frame { width: 320px; height: 50px; }
-.ad-slot-social-bar .provider-ad-frame { height: 90px; }
+.detail-advertising { width: min(100% - 2rem, 1180px); margin: 0 auto 2.5rem; }
 
 @media (max-width: 767px) {
   .ad-slot { margin-block: 1rem; }
