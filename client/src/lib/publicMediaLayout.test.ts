@@ -68,5 +68,8 @@ describe("public media layout contracts", () => {
     expect(sync).toContain("refreshGeneratedArtworkDescriptions");
     expect(admin).toContain("keeps the verified owner session through refresh");
     expect(dashboard).toContain("Refresh keeps the connection");
+    const detail = source("client/src/pages/ArtworkDetail.tsx");
+    expect(detail).not.toContain("Direct Cloudinary download");
+    expect(detail).not.toContain("permanent Cloudinary edition");
   });
 });

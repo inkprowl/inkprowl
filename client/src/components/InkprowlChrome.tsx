@@ -56,7 +56,7 @@ export function Footer() {
           <Link href="/privacy">Privacy Policy</Link>
         </div>
       </div>
-      <div className="footer-bottom"><span>© 2026 INKPROWL</span><span>Cloudinary-delivered editions</span></div>
+      <div className="footer-bottom"><span>© 2026 INKPROWL</span><span>Free digital editions</span></div>
     </footer></>
   );
 }
@@ -104,14 +104,14 @@ export function FloatingPlayer() {
       <button type="button" className="player-utility" onClick={() => setMinimized((current) => !current)} aria-label={minimized ? "Expand music player" : "Minimize music player"} title={minimized ? "Expand" : "Minimize"}>{minimized ? <Music2 size={14} /> : <Minimize2 size={14} />}</button>
       <button type="button" className="player-utility player-close" onClick={() => setDismissed(true)} aria-label="Close music player" title="Close"><X size={14} /></button>
       <span className="player-dot" aria-hidden="true" />
-      {playlistOpen && !minimized && <div className="player-playlist" role="dialog" aria-label="Current playlist"><span>NOW PLAYING</span><strong>{siteMedia.soundtrackTitle || "Curated sound"}</strong><small>{soundtrackReady ? `${siteMedia.soundtrackArtist || "INKPROWL"} · Cloudinary audio edition` : "Awaiting an owner upload"}</small></div>}
+      {playlistOpen && !minimized && <div className="player-playlist" role="dialog" aria-label="Current playlist"><span>NOW PLAYING</span><strong>{siteMedia.soundtrackTitle || "Curated sound"}</strong><small>{soundtrackReady ? `${siteMedia.soundtrackArtist || "INKPROWL"} · audio edition` : "Awaiting an owner upload"}</small></div>}
     </div>
   );
 }
 
 export function CloudinaryVideoPlayer({ src, title, className = "", clientUrl, clientName }: { src?: string; title: string; className?: string; clientUrl?: string; clientName?: string }) {
   if (!src) {
-    return <div className={`cloudinary-video empty-video ${className}`}><div className="video-ratio-frame"><div className="empty-video-copy"><Film size={25} /><strong>Film awaiting release</strong><span>{title} will play here once its owner adds a Cloudinary video URL.</span></div></div></div>;
+    return <div className={`cloudinary-video empty-video ${className}`}><div className="video-ratio-frame"><div className="empty-video-copy"><Film size={25} /><strong>Film awaiting release</strong><span>{title} will play here once its owner adds a video.</span></div></div></div>;
   }
   return <div className={`cloudinary-video ${className}`}><div className="video-ratio-frame"><video controls preload="metadata" playsInline aria-label={title}><source src={src} />Your browser does not support HTML5 video.</video></div>{clientUrl && <div className="video-controls-bar"><a href={clientUrl} target="_blank" rel="noreferrer sponsored" className="sponsor-visit-link">Visit {clientName || "client site"}</a></div>}</div>;
 }
