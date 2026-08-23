@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activeAdvertisementProviders, advertisingPlacements, advertisingSettings, artworks, availableDownloadFormats, categories, getArtwork, getArtworkShareUrl, getCloudinaryDownloadUrl, isAdvertisementPlacementEnabled, isApprovedClientDestination, isCloudinaryDeliveryUrl, publishedArtworks, relatedArtworks, siteBranding, siteMedia, sponsoredCampaign, validateArtworkMedia, validateOwnerConfiguration, validateSiteMedia } from "./catalog";
+import { activeAdvertisementProviders, advertisingPlacements, advertisingSettings, artworks, availableDownloadFormats, categories, getAdvertisementProviderCodes, getArtwork, getArtworkShareUrl, getCloudinaryDownloadUrl, isAdvertisementPlacementEnabled, isApprovedClientDestination, isCloudinaryDeliveryUrl, isSafeVisibleAdsterraCode, publishedArtworks, relatedArtworks, siteBranding, siteMedia, sponsoredCampaign, validateArtworkMedia, validateOwnerConfiguration, validateSiteMedia } from "./catalog";
 
 describe("INKPROWL catalog", () => {
   it("contains all requested public browsing categories while honouring the owner-approved category rename", () => {
@@ -81,7 +81,7 @@ describe("INKPROWL catalog", () => {
   });
 
   it("keeps named advertising placements hidden until both a provider and the placement are enabled", () => {
-    expect(advertisingPlacements).toEqual(["header", "social-native", "between-grid", "popunder", "footer"]);
+    expect(advertisingPlacements).toEqual(["header", "social-native", "between-grid", "popunder", "footer", "native-banner", "social-bar", "rectangle-300x250", "leaderboard-728x90", "mobile-320x50"]);
     expect(isAdvertisementPlacementEnabled("header", advertisingSettings)).toBe(false);
     expect(isAdvertisementPlacementEnabled("between-grid", { adsenseEnabled: true, adsterraEnabled: false, placements: { "between-grid": true } })).toBe(true);
     expect(isAdvertisementPlacementEnabled("footer", { adsenseEnabled: false, adsterraEnabled: false, placements: { footer: true } })).toBe(false);
@@ -92,6 +92,34 @@ describe("INKPROWL catalog", () => {
     expect(isAdvertisementPlacementEnabled("popunder", configuredPopunder)).toBe(false);
     expect(isAdvertisementPlacementEnabled("popunder", { ...configuredPopunder, placements: { popunder: true } })).toBe(false);
     expect(isAdvertisementPlacementEnabled("popunder", { ...configuredPopunder, placements: { popunder: false } })).toBe(false);
+  });
+
+  it("makes each requested visible Adsterra format an independent owner-controlled placement", () => {
+    for (const placement of ["native-banner", "social-bar", "rectangle-300x250", "leaderboard-728x90", "mobile-320x50"] as const) {
+      expect(isAdvertisementPlacementEnabled(placement, advertisingSettings)).toBe(false);
+      expect(isAdvertisementPlacementEnabled(placement, { adsenseEnabled: false, adsterraEnabled: true, placements: { [placement]: true } })).toBe(true);
+    }
+  });
+
+  it("rejects obvious Popunder code from every visible Adsterra placement", () => {
+    expect(isSafeVisibleAdsterraCode('<script src="https://cdn.example.test/banner.js"></script>')).toBe(true);
+    expect(isSafeVisibleAdsterraCode('<script src="https://profitableratecpmnetwork.com/format.js"></script>')).toBe(false);
+    expect(isSafeVisibleAdsterraCode('<script>/* popunder */</script>')).toBe(false);
+  });
+
+  it("selects visible Adsterra code only for its enabled matching slot and never for Popunder", () => {
+    const settings = {
+      adsenseEnabled: false,
+      adsterraEnabled: true,
+      placements: { "native-banner": true, "social-bar": true, popunder: true },
+      placementCodes: {
+        "native-banner": { adsterra: '<script src="https://cdn.example.test/native.js"></script>' },
+        popunder: { adsterra: '<script src="https://cdn.example.test/popunder.js"></script>' },
+      },
+    };
+    expect(getAdvertisementProviderCodes("native-banner", settings)).toEqual([{ name: "Adsterra", code: '<script src="https://cdn.example.test/native.js"></script>' }]);
+    expect(getAdvertisementProviderCodes("social-bar", settings)).toEqual([]);
+    expect(getAdvertisementProviderCodes("popunder", settings)).toEqual([]);
   });
 
   it("creates Cloudinary attachment URLs for each approved free-download format", () => {

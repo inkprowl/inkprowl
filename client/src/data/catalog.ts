@@ -56,14 +56,20 @@ export type AdvertisingSettings = {
   placementCodes?: Partial<Record<AdvertisingPlacement, { adsense?: string; adsterra?: string }>>;
 };
 
-export const advertisingPlacements = ["header", "social-native", "between-grid", "popunder", "footer"] as const;
+export const advertisingPlacements = ["header", "social-native", "between-grid", "popunder", "footer", "native-banner", "social-bar", "rectangle-300x250", "leaderboard-728x90", "mobile-320x50"] as const;
 export type AdvertisingPlacement = (typeof advertisingPlacements)[number];
+export const adsterraVisiblePlacements = ["native-banner", "social-bar", "rectangle-300x250", "leaderboard-728x90", "mobile-320x50"] as const satisfies readonly AdvertisingPlacement[];
 export const advertisingPlacementLabels: Record<AdvertisingPlacement, string> = {
   header: "Header banner",
   "social-native": "Social / native banner",
   "between-grid": "Between artwork grids",
   popunder: "Popunder",
   footer: "Footer banner",
+  "native-banner": "Adsterra Native Banner",
+  "social-bar": "Adsterra Social Bar",
+  "rectangle-300x250": "Adsterra 300 × 250",
+  "leaderboard-728x90": "Adsterra 728 × 90",
+  "mobile-320x50": "Adsterra 320 × 50",
 };
 type ManagedAsset = { publicId: string; resourceType: "image" | "video"; deliveryUrl: string };
 type CategoryDefinition = { name: string; icon?: string; count?: number };
@@ -154,7 +160,35 @@ export const isAdvertisementPlacementEnabled = (placement: AdvertisingPlacement,
   // Preserve owner configuration data, but never execute those scripts in the public experience.
   if (placement === "popunder") return false;
   const configuredState = settings.placements?.[placement];
+  if (isAdsterraVisiblePlacement(placement)) return Boolean(configuredState) && settings.adsterraEnabled;
   return Boolean(configuredState) && activeAdvertisementProviders(settings).length > 0;
+};
+
+export const isAdsterraVisiblePlacement = (placement: AdvertisingPlacement): placement is (typeof adsterraVisiblePlacements)[number] =>
+  adsterraVisiblePlacements.includes(placement as (typeof adsterraVisiblePlacements)[number]);
+
+/** Visible placements never accept obvious Popunder snippets, which otherwise can attach to ordinary page gestures. */
+export const isSafeVisibleAdsterraCode = (code: string | undefined) => {
+  const normalized = code?.trim().toLowerCase();
+  return normalized !== undefined && normalized.length > 0 && !/(profitableratecpmnetwork\.com|popunder|pop-under)/.test(normalized);
+};
+
+export type AdvertisementProviderCode = { name: "Google AdSense" | "Adsterra"; code: string };
+
+/** Resolve exactly which approved code snippets may mount in one visible public slot. */
+export const getAdvertisementProviderCodes = (placement: AdvertisingPlacement, settings: AdvertisingSettings = advertisingSettings): AdvertisementProviderCode[] => {
+  if (!isAdvertisementPlacementEnabled(placement, settings)) return [];
+  const placementCodes = settings.placementCodes?.[placement];
+  if (isAdsterraVisiblePlacement(placement)) {
+    const code = placementCodes?.adsterra;
+    return settings.adsterraEnabled && isSafeVisibleAdsterraCode(code) ? [{ name: "Adsterra", code: code! }] : [];
+  }
+  const providerCodes: AdvertisementProviderCode[] = [];
+  const adsenseCode = placementCodes?.adsense ?? settings.adsenseCode;
+  const adsterraCode = placementCodes?.adsterra ?? settings.adsterraCode;
+  if (settings.adsenseEnabled && adsenseCode?.trim()) providerCodes.push({ name: "Google AdSense", code: adsenseCode });
+  if (settings.adsterraEnabled && isSafeVisibleAdsterraCode(adsterraCode)) providerCodes.push({ name: "Adsterra", code: adsterraCode! });
+  return providerCodes;
 };
 
 export const availableDownloadFormats = (artwork: Artwork): DownloadFormat[] => artwork.downloadFormats ?? ["jpg", "png", "webp"];

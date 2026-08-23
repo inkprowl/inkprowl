@@ -37,13 +37,13 @@ export function Header() {
           </button>
         </div>
       </div>
-    </header><AdSlot placement="header" label="Header partner placement" /></>
+    </header><AdSlot placement="header" label="Header partner placement" /><AdSlot placement="leaderboard-728x90" label="728 × 90 partner banner" /></>
   );
 }
 
 export function Footer() {
   return (
-    <><AdSlot placement="footer" label="Footer partner placement" /><footer className="site-footer">
+    <><AdSlot placement="footer" label="Footer partner placement" /><AdSlot placement="mobile-320x50" label="320 × 50 partner banner" /><footer className="site-footer">
       <div className="footer-top">
         <div>
           <Mark />

@@ -1,7 +1,7 @@
 import { Download } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
-import { activeAdvertisementProviders, advertisingPlacementLabels, advertisingSettings, isAdvertisementPlacementEnabled, type AdvertisingPlacement, type Artwork } from "@/data/catalog";
+import { advertisingPlacementLabels, advertisingSettings, getAdvertisementProviderCodes, isAdvertisementPlacementEnabled, type AdvertisingPlacement, type Artwork } from "@/data/catalog";
 import "./publicAdvertising.css";
 
 export function ArtworkVisual({ artwork, large = false, onImageError }: { artwork: Artwork; large?: boolean; onImageError?: () => void }) {
@@ -29,7 +29,7 @@ export function ArtworkCard({ artwork, feature = false }: { artwork: Artwork; fe
   );
 }
 
-function ProviderCode({ provider, code, placement }: { provider: string; code?: string; placement: AdvertisingPlacement }) {
+function ProviderCode({ provider, code, placement }: { provider: string; code: string; placement: AdvertisingPlacement }) {
   const mountRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const mount = mountRef.current;
@@ -52,11 +52,8 @@ function ProviderCode({ provider, code, placement }: { provider: string; code?: 
 
 export function AdSlot({ placement, label = "Selected partner placement" }: { placement: AdvertisingPlacement; label?: string }) {
   if (placement === "popunder") return null;
-  const providers = activeAdvertisementProviders(advertisingSettings);
   if (!isAdvertisementPlacementEnabled(placement)) return null;
-  const placementCodes = advertisingSettings.placementCodes?.[placement];
-  const providerCodes: Array<{ name: string; code?: string }> = [];
-  if (advertisingSettings.adsenseEnabled) providerCodes.push({ name: "Google AdSense", code: placementCodes?.adsense ?? advertisingSettings.adsenseCode });
-  if (advertisingSettings.adsterraEnabled) providerCodes.push({ name: "Adsterra", code: placementCodes?.adsterra ?? advertisingSettings.adsterraCode });
-  return <aside className={`ad-slot ad-slot-${placement}`} aria-label={`${advertisingPlacementLabels[placement]} advertisement`} data-providers={providers.join(",")}><div className="ad-slot-label"><span>ADVERTISEMENT</span><small>{advertisingPlacementLabels[placement]}</small></div><strong>{label}</strong><div className="ad-code-stack">{providerCodes.map((provider) => <ProviderCode key={provider.name} provider={provider.name} code={provider.code} placement={placement} />)}</div></aside>;
+  const providerCodes = getAdvertisementProviderCodes(placement, advertisingSettings);
+  if (!providerCodes.length) return null;
+  return <aside className={`ad-slot ad-slot-${placement}`} aria-label={`${advertisingPlacementLabels[placement]} advertisement`} data-providers={providerCodes.map((provider) => provider.name).join(",")}><div className="ad-slot-label"><span>ADVERTISEMENT</span><small>{advertisingPlacementLabels[placement]}</small></div><strong>{label}</strong><div className="ad-code-stack">{providerCodes.map((provider) => <ProviderCode key={provider.name} provider={provider.name} code={provider.code} placement={placement} />)}</div></aside>;
 }
