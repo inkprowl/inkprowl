@@ -240,3 +240,4 @@
 - [x] Remove mobile touch activation of the closeable full-screen hero and artwork inspection windows so ordinary taps remain within the normal page layout.
 - [x] Restore native phone browser pinch zoom for the entire page layout, including the hero, artwork frame, text, and surrounding interface, without opening a separate viewer.
 - [x] Restyle the Admin login and management interface to match the latest INKPROWL storefront with a large logo/wordmark, paper-and-ink palette, vintage-comic framing, responsive layouts, and unchanged working controls.
+- [x] Refine Admin phone typography and alignment so headings and helper text do not overflow, and ensure 30–50 word artwork descriptions wrap and remain fully readable without horizontal scrolling.

@@ -225,4 +225,13 @@ describe("public media layout contracts", () => {
     expect(css).toContain(".owner-advanced-overlay{background:rgba(23,66,62,.78)");
     expect(mobileCss).toContain(".owner-login-topline .brand-word{display:block!important");
   });
+
+  it("keeps the Admin pressroom aligned and long artwork descriptions fully readable on phones", () => {
+    const mobileCss = source("client/src/pages/adminRetroMobile.css");
+    expect(mobileCss).toContain("Phone pressroom: compact headings and fully readable editorial descriptions");
+    expect(mobileCss).toContain(".owner-desk-brand>span:last-child{font-size:clamp(22px,7.1vw,28px)");
+    expect(mobileCss).toContain(".owner-launch-heading h3{max-inline-size:100%;margin:6px 0 12px;font-size:clamp(38px,11.2vw,52px)");
+    expect(mobileCss).toContain(".owner-edit-form textarea,.artwork-draft-card textarea{min-height:210px;max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;overflow-y:auto}");
+    expect(mobileCss).toContain(".owner-publish-session small,.owner-launch-heading p,.owner-upload-card p,.owner-workspace-heading p,.owner-record-card p,.owner-delete-note,.meta-preview span{max-inline-size:100%;overflow-wrap:anywhere;word-break:normal}");
+  });
 });
