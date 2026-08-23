@@ -20,12 +20,11 @@
 .sponsor-film-section { padding-top: 75px; padding-bottom: 80px; background: #f0e3cd; }
 .sponsor-video { max-width: 980px; margin: 0 auto; }
 .artwork-zoom-region { min-width: 0; }
-.artwork-zoom-toolbar { display: flex; justify-content: flex-end; align-items: center; gap: 6px; margin-bottom: 10px; }
-.artwork-zoom-toolbar button { display: grid; place-items: center; width: 32px; height: 32px; border: 1px solid var(--ink); background: #f7f1e5; color: var(--ink); }
-.artwork-zoom-toolbar button:disabled { opacity: .4; cursor: not-allowed; }
-.artwork-zoom-toolbar span { min-width: 41px; text-align: center; font-size: 10px; font-weight: 800; letter-spacing: .08em; }
-.artwork-zoom-stage { overflow: hidden; border: 1px solid var(--ink); background: #efe7d7; }
-.artwork-zoom-content { transform-origin: center; transition: transform .2s cubic-bezier(.23, 1, .32, 1); }
+.artwork-zoom-stage { overflow: hidden; border: 1px solid var(--ink); background: #efe7d7; touch-action: none; cursor: zoom-in; outline: 0; }
+.artwork-zoom-stage.is-zoomed { cursor: grab; }
+.artwork-zoom-stage.is-zoomed:active { cursor: grabbing; }
+.artwork-zoom-stage:focus-visible { box-shadow: 0 0 0 3px #c99a53; }
+.artwork-zoom-content { transform-origin: center; will-change: transform; transition: transform .16s cubic-bezier(.23, 1, .32, 1); }
 .artwork-zoom-content .art-image, .artwork-zoom-content .art-placeholder { border: 0; }
 .artwork-zoom-note { margin: 9px 0 0; color: #746a5a; font-size: 10px; line-height: 1.45; }
 @media (max-width: 800px) {
@@ -42,7 +41,6 @@
   .media-section .section-heading p { margin-top: 0; line-height: 1.45; font-size: 11px; }
   .cloudinary-video.hero-video > .video-ratio-frame, .cloudinary-video.sponsor-video > .video-ratio-frame, .cloudinary-video.detail-video-frame > .video-ratio-frame { aspect-ratio: 16 / 9; }
   .sponsor-film-section { padding-top: 55px; padding-bottom: 60px; }
-  .artwork-zoom-toolbar { justify-content: flex-start; }
   .detail-grid > .detail-video { padding: 14px 0 0 !important; background: transparent !important; }
   .detail-grid > .detail-video .sponsor-heading { padding-inline: 18px; }
   .detail-grid > .detail-video .cloudinary-video.detail-video-frame { width: 100%; border: 0; box-shadow: none; }

@@ -1,20 +1,84 @@
-import { ArrowLeft, Download, House, RotateCcw, Share2, Tag, ZoomIn, ZoomOut } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from "react";
 import { Link, useRoute } from "wouter";
+import { ArrowLeft, Download, House, Share2, Tag } from "lucide-react";
 import { ArtworkCard, ArtworkVisual, AdSlot } from "@/components/ArtworkCard";
 import { CloudinaryVideoPlayer, PageFrame } from "@/components/InkprowlChrome";
 import { availableDownloadFormats, getArtwork, getArtworkShareUrl, getCloudinaryDownloadUrl, relatedArtworks, siteMedia, sponsoredCampaign } from "@/data/catalog";
+
+type Point = { x: number; y: number };
 
 export default function ArtworkDetail() {
   const [, params] = useRoute("/art/:slug");
   const artwork = getArtwork(params?.slug || "");
   const [shareStatus, setShareStatus] = useState("");
   const [zoom, setZoom] = useState(1);
+  const [pan, setPan] = useState<Point>({ x: 0, y: 0 });
+  const stageRef = useRef<HTMLDivElement>(null);
+  const pointers = useRef(new Map<number, Point>());
+  const zoomRef = useRef(1);
+  const panRef = useRef<Point>({ x: 0, y: 0 });
+  const pinchStart = useRef<{ distance: number; zoom: number } | null>(null);
+  const dragStart = useRef<{ point: Point; pan: Point } | null>(null);
+
+  const commitPan = (next: Point, atZoom = zoomRef.current) => {
+    const stage = stageRef.current;
+    const maxX = ((stage?.clientWidth ?? 0) * Math.max(0, atZoom - 1)) / 2;
+    const maxY = ((stage?.clientHeight ?? 0) * Math.max(0, atZoom - 1)) / 2;
+    const bounded = { x: Math.max(-maxX, Math.min(maxX, next.x)), y: Math.max(-maxY, Math.min(maxY, next.y)) };
+    panRef.current = bounded;
+    setPan(bounded);
+  };
+  const commitZoom = (next: number) => {
+    const bounded = Math.max(1, Math.min(3.5, Number(next.toFixed(2))));
+    zoomRef.current = bounded;
+    setZoom(bounded);
+    commitPan(bounded === 1 ? { x: 0, y: 0 } : panRef.current, bounded);
+  };
+  const pointerDistance = () => {
+    const [first, second] = Array.from(pointers.current.values());
+    return first && second ? Math.hypot(first.x - second.x, first.y - second.y) : 0;
+  };
+  const handlePointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
+    event.currentTarget.setPointerCapture(event.pointerId);
+    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pointers.current.size >= 2) {
+      pinchStart.current = { distance: pointerDistance(), zoom: zoomRef.current };
+      dragStart.current = null;
+    } else if (zoomRef.current > 1) {
+      dragStart.current = { point: { x: event.clientX, y: event.clientY }, pan: panRef.current };
+    }
+  };
+  const handlePointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (!pointers.current.has(event.pointerId)) return;
+    pointers.current.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (pointers.current.size >= 2 && pinchStart.current) {
+      const distance = pointerDistance();
+      if (distance > 0) commitZoom(pinchStart.current.zoom * (distance / pinchStart.current.distance));
+      return;
+    }
+    if (pointers.current.size === 1 && dragStart.current && zoomRef.current > 1) {
+      commitPan({ x: dragStart.current.pan.x + event.clientX - dragStart.current.point.x, y: dragStart.current.pan.y + event.clientY - dragStart.current.point.y });
+    }
+  };
+  const finishPointer = (event: ReactPointerEvent<HTMLDivElement>) => {
+    pointers.current.delete(event.pointerId);
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (pointers.current.size === 1 && zoomRef.current > 1) {
+      const remaining = Array.from(pointers.current.values())[0];
+      dragStart.current = { point: remaining, pan: panRef.current };
+    } else if (pointers.current.size === 0) {
+      pinchStart.current = null;
+      dragStart.current = null;
+    }
+  };
+  const handleZoomKey = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Escape") { event.preventDefault(); commitZoom(1); }
+    if (event.key === "Enter" || event.key === " ") { event.preventDefault(); commitZoom(zoomRef.current > 1 ? 1 : 2); }
+  };
 
   if (!artwork) return <PageFrame><div className="not-found-copy"><h1>This edition has left the archive.</h1><div className="detail-page-nav"><Link href="/" className="button-outline"><House size={16} /> Home</Link><Link href="/gallery" className="button-dark">Return to gallery</Link></div></div></PageFrame>;
 
   const related = relatedArtworks(artwork);
-  const formats = availableDownloadFormats(artwork);
   const downloadLinks = availableDownloadFormats(artwork).map((format) => ({ format, url: getCloudinaryDownloadUrl(artwork.imageUrl, artwork.slug, format) })).filter((item): item is { format: "jpg" | "png" | "webp"; url: string } => Boolean(item.url));
   const shareUrl = getArtworkShareUrl(artwork.slug);
   const shareText = `${artwork.title} — INKPROWL`;
@@ -38,7 +102,7 @@ export default function ArtworkDetail() {
     <section className="detail-wrap">
       <nav className="detail-page-nav" aria-label="Artwork page navigation"><Link href="/" className="back-link"><House size={16} /> Home</Link><Link href="/gallery" className="back-link"><ArrowLeft size={16} /> Back to gallery</Link></nav>
       <div className="detail-grid">
-        <div className="detail-art artwork-zoom-region"><div className="artwork-zoom-toolbar" role="group" aria-label="Artwork zoom controls"><button type="button" onClick={() => setZoom((current) => Math.max(1, Number((current - 0.2).toFixed(1))))} disabled={zoom <= 1} aria-label="Zoom out"><ZoomOut size={16} /></button><span aria-live="polite">{Math.round(zoom * 100)}%</span><button type="button" onClick={() => setZoom((current) => Math.min(2.4, Number((current + 0.2).toFixed(1))))} disabled={zoom >= 2.4} aria-label="Zoom in"><ZoomIn size={16} /></button>{zoom > 1 && <button type="button" onClick={() => setZoom(1)} aria-label="Reset artwork zoom"><RotateCcw size={15} /></button>}</div><div className="artwork-zoom-stage"><div className="artwork-zoom-content" style={{ transform: `scale(${zoom})` }}><ArtworkVisual artwork={artwork} large /></div></div><p className="artwork-zoom-note">Use zoom controls to inspect the edition detail. Download files remain unchanged.</p></div>
+        <div className="detail-art artwork-zoom-region"><div ref={stageRef} className={`artwork-zoom-stage${zoom > 1 ? " is-zoomed" : ""}`} tabIndex={0} role="region" aria-label="Artwork viewer. Pinch with two fingers to zoom, drag to inspect details, double-tap to reset, or press Enter to toggle zoom and Escape to reset." onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={finishPointer} onPointerCancel={finishPointer} onDoubleClick={() => commitZoom(zoomRef.current > 1 ? 1 : 2)} onKeyDown={handleZoomKey}><div className="artwork-zoom-content" style={{ transform: `translate3d(${pan.x}px, ${pan.y}px, 0) scale(${zoom})` }}><ArtworkVisual artwork={artwork} large /></div></div><p className="artwork-zoom-note">Pinch with two fingers to zoom, then drag to inspect the artwork. Double-tap or press Escape to reset. Downloads remain unchanged.</p></div>
         <div className="detail-copy">
           <div className="eyebrow"><Tag size={14} /> {artwork.category}</div>
           <h1>{artwork.title}</h1><p>{artwork.description}</p><div className="detail-divider" />

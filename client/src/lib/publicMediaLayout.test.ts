@@ -72,4 +72,17 @@ describe("public media layout contracts", () => {
     expect(detail).not.toContain("Direct Cloudinary download");
     expect(detail).not.toContain("permanent Cloudinary edition");
   });
+
+  it("uses touch-first pinch and drag controls instead of visible individual-artwork zoom buttons", () => {
+    const detail = source("client/src/pages/ArtworkDetail.tsx");
+    const mediaCss = source("client/src/components/inkprowlMedia.css");
+    expect(detail).toContain("onPointerDown={handlePointerDown}");
+    expect(detail).toContain("onPointerMove={handlePointerMove}");
+    expect(detail).toContain("onDoubleClick={() => commitZoom");
+    expect(detail).toContain("Pinch with two fingers to zoom");
+    expect(detail).not.toContain("artwork-zoom-toolbar");
+    expect(detail).not.toContain("ZoomIn");
+    expect(mediaCss).toContain("touch-action: none");
+    expect(mediaCss).toContain(".artwork-zoom-stage.is-zoomed");
+  });
 });
