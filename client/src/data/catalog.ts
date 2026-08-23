@@ -172,10 +172,10 @@ export const isAdvertisementPlacementEnabled = (placement: AdvertisingPlacement,
 export const isAdsterraVisiblePlacement = (placement: AdvertisingPlacement): placement is (typeof adsterraVisiblePlacements)[number] =>
   adsterraVisiblePlacements.includes(placement as (typeof adsterraVisiblePlacements)[number]);
 
-/** Visible placements never accept obvious Popunder snippets, which otherwise can attach to ordinary page gestures. */
+/** Owner code always remains saved; snippets labelled as Popunder do not render in visible slots. */
 export const isSafeVisibleAdsterraCode = (code: string | undefined) => {
   const normalized = code?.trim().toLowerCase();
-  return normalized !== undefined && normalized.length > 0 && !/(profitableratecpmnetwork\.com|popunder|pop-under)/.test(normalized);
+  return normalized !== undefined && normalized.length > 0 && !/(popunder|pop-under)/.test(normalized);
 };
 
 export type AdvertisementProviderCode = { name: "Google AdSense" | "Adsterra"; code: string };

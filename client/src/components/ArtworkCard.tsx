@@ -30,6 +30,10 @@ export function ArtworkCard({ artwork, feature = false }: { artwork: Artwork; fe
 }
 
 function ProviderCode({ provider, code, placement }: { provider: string; code: string; placement: AdvertisingPlacement }) {
+  if (provider === "Adsterra") {
+    const documentContent = `<!doctype html><html><head><base target="_blank"></head><body><div id="ad-root">${code}</div></body></html>`;
+    return <div className="provider-ad-code" data-provider={provider} data-placement={placement}><iframe className="provider-ad-frame" title={`${advertisingPlacementLabels[placement]} Adsterra advertisement`} sandbox="allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox" referrerPolicy="no-referrer" srcDoc={documentContent} /></div>;
+  }
   const mountRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const mount = mountRef.current;

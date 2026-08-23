@@ -116,9 +116,9 @@ describe("INKPROWL catalog", () => {
     expect(isAdvertisementPlacementEnabled("native-banner", { ...settings, advertisingEnabled: true })).toBe(true);
   });
 
-  it("rejects obvious Popunder code from every visible Adsterra placement", () => {
+  it("accepts provider-hosted visible unit scripts while withholding only snippets explicitly marked as Popunder", () => {
     expect(isSafeVisibleAdsterraCode('<script src="https://cdn.example.test/banner.js"></script>')).toBe(true);
-    expect(isSafeVisibleAdsterraCode('<script src="https://profitableratecpmnetwork.com/format.js"></script>')).toBe(false);
+    expect(isSafeVisibleAdsterraCode('<script async src="https://profitableratecpmnetwork.com/df1754d24286634e3299cded445fd34e/invoke.js"></script>')).toBe(true);
     expect(isSafeVisibleAdsterraCode('<script>/* popunder */</script>')).toBe(false);
   });
 
@@ -135,6 +135,12 @@ describe("INKPROWL catalog", () => {
     expect(getAdvertisementProviderCodes("native-banner", settings)).toEqual([{ name: "Adsterra", code: '<script src="https://cdn.example.test/native.js"></script>' }]);
     expect(getAdvertisementProviderCodes("social-bar", settings)).toEqual([]);
     expect(getAdvertisementProviderCodes("popunder", settings)).toEqual([]);
+  });
+
+  it("keeps provider-hosted visible code available for its selected unit without relying on a provider domain allowlist", () => {
+    const code = '<script async src="https://profitableratecpmnetwork.com/df1754d24286634e3299cded445fd34e/invoke.js"></script>';
+    const settings = { adsenseEnabled: false, adsterraEnabled: true, placements: { "native-banner": true }, placementCodes: { "native-banner": { adsterra: code } } };
+    expect(getAdvertisementProviderCodes("native-banner", settings)).toEqual([{ name: "Adsterra", code }]);
   });
 
   it("creates Cloudinary attachment URLs for each approved free-download format", () => {
