@@ -60,4 +60,8 @@
   .artwork-fullscreen-dialog { padding-top: max(14px, env(safe-area-inset-top)) !important; padding-bottom: max(14px, env(safe-area-inset-bottom)) !important; }
   .artwork-fullscreen-close span { display: none; }
   .artwork-fullscreen-close { width: 42px; padding: 0; justify-content: center; }
+  .artwork-zoom-note { font-size: 11px; }
+  .artwork-fullscreen-dialog { padding-inline: 0 !important; }
+  .artwork-fullscreen-header { padding-inline: 14px; }
+  .artwork-fullscreen-hint { padding-inline: 14px; }
 }

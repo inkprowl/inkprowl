@@ -81,6 +81,8 @@ describe("public media layout contracts", () => {
     expect(detail).toContain("FullscreenArtworkViewer");
     expect(detail).toContain("Open full-screen artwork");
     expect(detail).toContain("Pinch with two fingers to zoom");
+    expect(detail).toContain('event.pointerType === "touch" && window.matchMedia("(max-width: 760px)").matches');
+    expect(detail).toContain("tap the artwork to inspect the complete edition full-screen");
     expect(detail).not.toContain("artwork-zoom-toolbar");
     expect(detail).not.toContain("ZoomIn");
     expect(mediaCss).toContain("touch-action: none");
@@ -88,6 +90,7 @@ describe("public media layout contracts", () => {
     expect(mediaCss).toContain(".artwork-fullscreen-dialog");
     expect(mediaCss).toContain(".artwork-fullscreen-content .art-image");
     expect(mediaCss).toContain("object-fit: contain");
+    expect(mediaCss).toContain(".artwork-fullscreen-dialog { padding-inline: 0 !important; }");
   });
 
   it("keeps configured display banners dismissible in the header without reactivating Popunder code", () => {
@@ -183,5 +186,7 @@ describe("public media layout contracts", () => {
     expect(retroCss).toContain(".site-shell .main-nav a{padding:12px 16px");
     expect(retroCss).toContain(".site-shell .main-nav a.active,.site-shell .main-nav a:hover{color:#fff4d7;background:#2f5f5a");
     expect(retroCss).toContain("@media(max-width:760px){.site-shell .header-inner{position:relative");
+    expect(retroCss).toContain(".site-shell .brand-seal{width:54px;height:54px");
+    expect(retroCss).toContain(".site-shell .brand-word{color:#2f5f5a;font-family:\"Bebas Neue\",\"Oswald\",sans-serif;font-size:20px");
   });
 });

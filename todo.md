@@ -235,3 +235,4 @@
 - [x] Restore the preferred green-framed hero with unobstructed artwork, make the desktop sponsor video clearly visible as a square module, and show only the video in the mobile media area instead of the yellow New Song Inkprowl card.
 - [x] Keep the approved mobile layout unchanged while moving the desktop sponsor video into a full-width landscape module directly below the visible ad area and above Fresh Issues.
 - [x] Enlarge and restyle the desktop logo, Home, and Gallery navigation with stronger vintage-comic typography and cream/teal/rust contrast while preserving the approved hero, video, player, and mobile layout.
+- [x] Enlarge the mobile masthead logo and ensure the individual artwork viewer opens and pinch-zooms across the full phone screen rather than inside the square inline artwork frame.
