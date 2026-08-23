@@ -215,4 +215,4 @@
 - [x] Disable the site-wide Adsterra Popunder script so ordinary navigation clicks do not open unexpected advertising links; retain explicit non-Popunder placement controls for future ads.
 - [x] Add separate Admin code boxes and visible public placement controls for Adsterra Native Banner, Social Bar, and 300×250, 728×90, and 320×50 banner formats.
 - [x] Preserve all owner-entered advertising code boxes and add one clear master Ads on/off switch that disables or restores every configured visible placement without erasing its saved code.
-- [ ] Allow legitimate visible Adsterra snippets to save in their selected Admin code boxes without a blocking red format-validation error, while retaining master on/off behavior and no site-wide Popunder execution.
+- [x] Allow legitimate visible Adsterra snippets to save in their selected Admin code boxes without a blocking red format-validation error, while retaining master on/off behavior and no site-wide Popunder execution.
