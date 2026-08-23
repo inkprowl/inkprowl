@@ -37,13 +37,17 @@ function ProviderCode({ provider, code, placement }: { provider: string; code: s
     const template = document.createElement("template");
     template.innerHTML = code;
     mount.replaceChildren();
-    Array.from(template.content.childNodes).forEach((node) => {
+    const nodes = Array.from(template.content.childNodes);
+    nodes.filter((node) => !(node instanceof HTMLScriptElement)).forEach((node) => {
+      mount.appendChild(node.cloneNode(true));
+    });
+    nodes.filter((node) => node instanceof HTMLScriptElement).forEach((node) => {
       if (node instanceof HTMLScriptElement) {
         const script = document.createElement("script");
         Array.from(node.attributes).forEach((attribute) => script.setAttribute(attribute.name, attribute.value));
         script.textContent = node.textContent;
         mount.appendChild(script);
-      } else mount.appendChild(node.cloneNode(true));
+      }
     });
     return () => mount.replaceChildren();
   }, [code, placement, provider]);
