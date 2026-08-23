@@ -94,8 +94,8 @@ describe("INKPROWL catalog", () => {
     expect(isAdvertisementPlacementEnabled("popunder", { ...configuredPopunder, placements: { popunder: false } })).toBe(false);
   });
 
-  it("keeps only the remaining banner formats as independent owner-controlled visible placements", () => {
-    expect(adsterraVisiblePlacements).toEqual(["leaderboard-728x90", "mobile-320x50"]);
+  it("keeps every requested visible Adsterra format as an independent owner-controlled placement", () => {
+    expect(adsterraVisiblePlacements).toEqual(["native-banner", "social-bar", "rectangle-300x250", "leaderboard-728x90", "mobile-320x50"]);
     for (const placement of adsterraVisiblePlacements) {
       expect(isAdvertisementPlacementEnabled(placement, advertisingSettings)).toBe(false);
       expect(isAdvertisementPlacementEnabled(placement, { adsenseEnabled: false, adsterraEnabled: true, placements: { [placement]: true } })).toBe(true);
@@ -151,10 +151,10 @@ describe("INKPROWL catalog", () => {
     expect(getAdvertisementProviderCodes("leaderboard-728x90", settings)).toEqual([{ name: "Adsterra", code }]);
   });
 
-  it("keeps stored legacy social/native code intact while it is no longer an active visible-format slot", () => {
+  it("uses saved Native Banner code only in its enabled dedicated visible slot", () => {
     const code = '<script async data-cfasync="false" src="https://pl30795920.profitableratecpmnetwork.com/c1f8260496fe21bbc3c50899238f0512/invoke.js"></script><div id="container-c1f8260496fe21bbc3c50899238f0512"></div>';
-    const settings = { advertisingEnabled: true, adsenseEnabled: false, adsterraEnabled: true, placements: { "social-native": true }, placementCodes: { "social-native": { adsterra: code } } };
-    expect(getAdvertisementProviderCodes("social-native", settings)).toEqual([{ name: "Adsterra", code }]);
+    const settings = { advertisingEnabled: true, adsenseEnabled: false, adsterraEnabled: true, placements: { "native-banner": true }, placementCodes: { "native-banner": { adsterra: code } } };
+    expect(getAdvertisementProviderCodes("native-banner", settings)).toEqual([{ name: "Adsterra", code }]);
     expect(getAdvertisementProviderCodes("social-native", { ...settings, advertisingEnabled: false })).toEqual([]);
   });
 

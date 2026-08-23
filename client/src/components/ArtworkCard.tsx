@@ -1,7 +1,7 @@
 import { Download } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
-import { advertisingPlacementLabels, advertisingSettings, getAdvertisementProviderCodes, isAdvertisementPlacementEnabled, isAdvertisementPlacementRenderableAtViewport, type AdvertisingPlacement, type Artwork } from "@/data/catalog";
+import { advertisingPlacementLabels, advertisingSettings, getAdvertisementProviderCodes, isAdvertisementPlacementEnabled, isAdvertisementPlacementRenderableAtViewport, isAdsterraVisiblePlacement, type AdvertisingPlacement, type Artwork } from "@/data/catalog";
 import "./publicAdvertising.css";
 
 export function ArtworkVisual({ artwork, large = false, onImageError }: { artwork: Artwork; large?: boolean; onImageError?: () => void }) {
@@ -64,5 +64,6 @@ export function AdSlot({ placement, label = "Selected partner placement" }: { pl
   if (!isAdvertisementPlacementEnabled(placement)) return null;
   const providerCodes = getAdvertisementProviderCodes(placement, advertisingSettings);
   if (!providerCodes.length) return null;
-  return <aside className={`ad-slot ad-slot-${placement}`} aria-label={`${advertisingPlacementLabels[placement]} advertisement`} data-providers={providerCodes.map((provider) => provider.name).join(",")}><div className="ad-slot-label"><span>ADVERTISEMENT</span><small>{advertisingPlacementLabels[placement]}</small></div><strong>{label}</strong><div className="ad-code-stack">{providerCodes.map((provider) => <ProviderCode key={provider.name} provider={provider.name} code={provider.code} placement={placement} />)}</div></aside>;
+  const providerManagedPlacement = isAdsterraVisiblePlacement(placement);
+  return <aside className={`ad-slot ad-slot-${placement}${providerManagedPlacement ? " ad-slot-provider-managed" : ""}`} aria-label={`${advertisingPlacementLabels[placement]} advertisement`} data-providers={providerCodes.map((provider) => provider.name).join(",")}>{!providerManagedPlacement && <><div className="ad-slot-label"><span>ADVERTISEMENT</span><small>{advertisingPlacementLabels[placement]}</small></div><strong>{label}</strong></>}<div className="ad-code-stack">{providerCodes.map((provider) => <ProviderCode key={provider.name} provider={provider.name} code={provider.code} placement={placement} />)}</div></aside>;
 }

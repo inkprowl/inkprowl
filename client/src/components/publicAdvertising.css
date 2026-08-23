@@ -22,6 +22,12 @@
 .ad-slot-leaderboard-728x90 .provider-ad-frame { width: 728px; height: 90px; }
 .ad-slot-mobile-320x50 .provider-ad-frame { width: 320px; height: 50px; }
 .detail-advertising { width: min(100% - 2rem, 1180px); margin: 0 auto 2.5rem; }
+.ad-slot-provider-managed { width: min(100% - 2rem, 1180px); margin: 1.25rem auto; padding: 0; border: 0; background: transparent; color: inherit; }
+.ad-slot-provider-managed .ad-code-stack { gap: 0; }
+.ad-slot-native-banner .provider-ad-code { width: min(100%, 640px); }
+.ad-slot-rectangle-300x250 .provider-ad-code { width: 300px; min-height: 250px; }
+.ad-slot-social-bar { min-height: 0; margin: 0; }
+.ad-slot-social-bar .provider-ad-code { width: auto; min-height: 0; }
 
 @media (max-width: 767px) {
   .ad-slot { margin-block: 1rem; }

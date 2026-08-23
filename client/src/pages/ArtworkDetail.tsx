@@ -115,7 +115,7 @@ export default function ArtworkDetail() {
         <section className="detail-video"><div className="sponsor-heading"><span className="eyebrow">IN MOTION</span><h2>Edition film.</h2><p>A full-frame film selected for this edition.</p></div><CloudinaryVideoPlayer className="detail-video-frame full-video-fit landscape-video-frame" src={artwork.videoUrl ?? siteMedia.defaultArtworkFilmUrl ?? sponsoredCampaign.videoUrl} title={`${artwork.title} film`} clientUrl={sponsoredCampaign.clientUrl} clientName="sponsor site" /></section>
       </div>
     </section>
-    <section className="detail-advertising" aria-label="Artwork page advertising"><AdSlot placement="leaderboard-728x90" label="Artwork page 728 × 90 partner banner" /><AdSlot placement="mobile-320x50" label="Artwork page 320 × 50 partner banner" /></section>
+    <section className="detail-advertising" aria-label="Artwork page advertising"><AdSlot placement="native-banner" label="Artwork page native partner banner" /><AdSlot placement="leaderboard-728x90" label="Artwork page 728 × 90 partner banner" /><AdSlot placement="mobile-320x50" label="Artwork page 320 × 50 partner banner" /><AdSlot placement="social-bar" label="Artwork page social partner placement" /></section>
     {related.length > 0 && <section className="section-wrap related-section"><div className="section-heading"><div><span className="eyebrow">FROM THE SAME CASE</span><h2>Related artwork</h2></div></div><div className="related-grid">{related.map((item) => <ArtworkCard key={item.slug} artwork={item} />)}</div></section>}
   </PageFrame>;
 }
