@@ -103,4 +103,18 @@ describe("public media layout contracts", () => {
     expect(advertisingCss).toContain(".dismissible-header-ad.is-waiting");
     expect(catalogue).toContain('if (placement === "popunder") return false;');
   });
+
+  it("prioritizes large artwork and truthful discovery modules on the public storefront", () => {
+    const home = source("client/src/pages/Home.tsx");
+    const css = source("client/src/index.css");
+    expect(home).toContain("LATEST INTO THE ARCHIVE");
+    expect(home).toContain("TRENDING NOW");
+    expect(home).toContain("SHOP THE DEPARTMENTS");
+    expect(home).toContain("latestArtworks");
+    expect(home).toContain("collectorPicks");
+    expect(css).toContain(".latest-grid{display:grid");
+    expect(css).toContain(".trending-section{padding-top:70px");
+    expect(css).toContain(".archive-manifesto{padding:64px");
+    expect(css).toContain(".detail-grid{grid-template-columns:minmax(0,1.5fr)");
+  });
 });
