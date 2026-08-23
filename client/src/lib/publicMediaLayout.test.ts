@@ -77,6 +77,7 @@ describe("public media layout contracts", () => {
     const detail = source("client/src/pages/ArtworkDetail.tsx");
     const viewer = source("client/src/components/FullscreenInspectionViewer.tsx");
     const mediaCss = source("client/src/components/inkprowlMedia.css");
+    const html = source("client/index.html");
     expect(detail).toContain("FullscreenInspectionViewer");
     expect(detail).toContain("Open full-screen artwork");
     expect(detail).toContain('if (event.pointerType === "touch" && window.matchMedia("(max-width: 760px)").matches) return;');
@@ -96,6 +97,8 @@ describe("public media layout contracts", () => {
     expect(mediaCss).toContain("object-fit: contain");
     expect(mediaCss).toContain(".artwork-fullscreen-dialog { padding-inline: 0 !important; }");
     expect(mediaCss).toContain(".artwork-fullscreen-framed-layout");
+    expect(html).toContain('content="width=device-width, initial-scale=1.0"');
+    expect(html).not.toContain("maximum-scale");
   });
 
   it("keeps configured display banners dismissible in the header without reactivating Popunder code", () => {

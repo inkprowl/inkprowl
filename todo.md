@@ -238,3 +238,4 @@
 - [x] Enlarge the mobile masthead logo and ensure the individual artwork viewer opens and pinch-zooms across the full phone screen rather than inside the square inline artwork frame.
 - [x] Add a green, stylish INKPROWL masthead wordmark between the phone logo seal and menu control, and allow the complete framed hero/artwork composition—not only its inner image—to open into pinch-and-drag inspection on mobile.
 - [x] Remove mobile touch activation of the closeable full-screen hero and artwork inspection windows so ordinary taps remain within the normal page layout.
+- [x] Restore native phone browser pinch zoom for the entire page layout, including the hero, artwork frame, text, and surrounding interface, without opening a separate viewer.
