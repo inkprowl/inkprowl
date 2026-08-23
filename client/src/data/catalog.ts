@@ -65,14 +65,6 @@ export const advertisingPlacementLabels: Record<AdvertisingPlacement, string> = 
   popunder: "Popunder",
   footer: "Footer banner",
 };
-const defaultAdvertisingPlacements: Record<AdvertisingPlacement, boolean> = {
-  header: false,
-  "social-native": false,
-  "between-grid": false,
-  popunder: false,
-  footer: false,
-};
-
 type ManagedAsset = { publicId: string; resourceType: "image" | "video"; deliveryUrl: string };
 type CategoryDefinition = { name: string; icon?: string; count?: number };
 type GeneratedCatalogue = {
@@ -149,7 +141,7 @@ export const advertisingSettings: AdvertisingSettings = {
   adsenseEnabled: false,
   adsterraEnabled: false,
   ...generatedCatalogue.advertisingSettings,
-  placements: { ...defaultAdvertisingPlacements, ...(generatedCatalogue.advertisingSettings.placements ?? {}) },
+  placements: generatedCatalogue.advertisingSettings.placements ?? {},
 };
 
 export const activeAdvertisementProviders = (settings: AdvertisingSettings = advertisingSettings) => [
@@ -157,8 +149,16 @@ export const activeAdvertisementProviders = (settings: AdvertisingSettings = adv
   settings.adsterraEnabled ? "Adsterra" : undefined,
 ].filter((provider): provider is string => Boolean(provider));
 
-export const isAdvertisementPlacementEnabled = (placement: AdvertisingPlacement, settings: AdvertisingSettings = advertisingSettings) =>
-  Boolean(settings.placements?.[placement]) && activeAdvertisementProviders(settings).length > 0;
+export const isAdvertisementPlacementEnabled = (placement: AdvertisingPlacement, settings: AdvertisingSettings = advertisingSettings) => {
+  const configuredState = settings.placements?.[placement];
+  const placementCode = settings.placementCodes?.[placement];
+  const hasEnabledPopunderCode = placement === "popunder" && (
+    (settings.adsenseEnabled && Boolean(placementCode?.adsense?.trim())) ||
+    (settings.adsterraEnabled && Boolean(placementCode?.adsterra?.trim()))
+  );
+  const placementIsActive = configuredState === undefined ? hasEnabledPopunderCode : configuredState;
+  return Boolean(placementIsActive) && activeAdvertisementProviders(settings).length > 0;
+};
 
 export const availableDownloadFormats = (artwork: Artwork): DownloadFormat[] => artwork.downloadFormats ?? ["jpg", "png", "webp"];
 

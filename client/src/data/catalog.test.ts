@@ -87,6 +87,12 @@ describe("INKPROWL catalog", () => {
     expect(isAdvertisementPlacementEnabled("footer", { adsenseEnabled: false, adsterraEnabled: false, placements: { footer: true } })).toBe(false);
   });
 
+  it("activates a saved Adsterra Popunder code unless the owner explicitly turns that placement off", () => {
+    const configuredPopunder = { adsenseEnabled: false, adsterraEnabled: true, placements: {}, placementCodes: { popunder: { adsterra: '<script src="https://example.test/popunder.js"></script>' } } };
+    expect(isAdvertisementPlacementEnabled("popunder", configuredPopunder)).toBe(true);
+    expect(isAdvertisementPlacementEnabled("popunder", { ...configuredPopunder, placements: { popunder: false } })).toBe(false);
+  });
+
   it("creates Cloudinary attachment URLs for each approved free-download format", () => {
     const newest = publishedArtworks[0]!;
     expect(availableDownloadFormats(newest)).toEqual(["jpg", "png", "webp"]);
