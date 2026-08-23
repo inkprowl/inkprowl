@@ -1007,13 +1007,38 @@
     "adsenseCode": "",
     "adsterraCode": "",
     "placements": {
-      "social-native": true
+      "social-native": true,
+      "native-banner": true,
+      "social-bar": true,
+      "rectangle-300x250": true,
+      "leaderboard-728x90": true,
+      "mobile-320x50": true,
+      "popunder": true
     },
     "placementCodes": {
       "social-native": {
         "adsterra": "<script async=\"async\" data-cfasync=\"false\" src=\"https://pl30795920.profitableratecpmnetwork.com/c1f8260496fe21bbc3c50899238f0512/invoke.js\"></script>\n<div id=\"container-c1f8260496fe21bbc3c50899238f0512\"></div>\n"
+      },
+      "popunder": {
+        "adsterra": "<script src=\"https://pl30795919.profitableratecpmnetwork.com/50/ab/a2/50aba2d6de4f2b11c3cec2dcfb51c552.js\"></script>"
+      },
+      "native-banner": {
+        "adsterra": "<script async=\"async\" data-cfasync=\"false\" src=\"https://pl30795920.profitableratecpmnetwork.com/c1f8260496fe21bbc3c50899238f0512/invoke.js\"></script>\n<div id=\"container-c1f8260496fe21bbc3c50899238f0512\"></div>"
+      },
+      "social-bar": {
+        "adsterra": "<script src=\"https://pl30795922.profitableratecpmnetwork.com/9a/8c/40/9a8c4004f972097dac8f578bde106928.js\"></script>"
+      },
+      "rectangle-300x250": {
+        "adsterra": "<script>\n  atOptions = {\n    'key' : '20ccfb2732eaae4cd98b50c6fbe84203',\n    'format' : 'iframe',\n    'height' : 250,\n    'width' : 300,\n    'params' : {}\n  };\n</script>\n<script src=\"https://www.highrevenueformat.com/20ccfb2732eaae4cd98b50c6fbe84203/invoke.js\"></script>"
+      },
+      "leaderboard-728x90": {
+        "adsterra": "<script>\n  atOptions = {\n    'key' : '81be6ca488b9ac6feccdc14351cd7b30',\n    'format' : 'iframe',\n    'height' : 90,\n    'width' : 728,\n    'params' : {}\n  };\n</script>\n<script src=\"https://www.highrevenueformat.com/81be6ca488b9ac6feccdc14351cd7b30/invoke.js\"></script>"
+      },
+      "mobile-320x50": {
+        "adsterra": "<script>\n  atOptions = {\n    'key' : 'df1754d42486634e3299cded445fd34e',\n    'format' : 'iframe',\n    'height' : 50,\n    'width' : 320,\n    'params' : {}\n  };\n</script>\n<script src=\"https://www.highrevenueformat.com/df1754d42486634e3299cded445fd34e/invoke.js\"></script>"
       }
-    }
+    },
+    "advertisingEnabled": true
   },
   "categories": [],
   "categoryAliases": {
