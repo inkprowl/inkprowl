@@ -597,6 +597,36 @@
       "publicId": "inkprowl/916bd1fc-7f65-4877-9a74-453f6c13327b/vintage-noir-comic-panel-black-panther-detective-examines-paw-print",
       "resourceType": "image",
       "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787496772/inkprowl/916bd1fc-7f65-4877-9a74-453f6c13327b/vintage-noir-comic-panel-black-panther-detective-examines-paw-print.png"
+    },
+    "gif:panther-neon-noir-loop": {
+      "publicId": "inkprowl/gif-samples-20260823/panther-neon-noir-loop",
+      "resourceType": "image",
+      "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787510706/inkprowl/gif-samples-20260823/panther-neon-noir-loop.gif"
     }
-  }
+  },
+  "gifs": [
+    {
+      "slug": "panther-neon-noir-loop",
+      "title": "Panther Neon Noir Loop",
+      "category": "GIFs",
+      "description": "An animated INKPROWL GIF edition featuring Panther Neon Noir Loop.",
+      "isPremium": false,
+      "accent": "gold",
+      "imageUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787510706/inkprowl/gif-samples-20260823/panther-neon-noir-loop.gif",
+      "mediaType": "gif",
+      "orientation": "square",
+      "tags": [
+        "panther",
+        "neon",
+        "noir",
+        "loop"
+      ],
+      "downloadFormats": [
+        "gif"
+      ],
+      "assetKey": "gif:panther-neon-noir-loop",
+      "publishedAt": "2026-08-23T18:45:07.027Z"
+    }
+  ],
+  "gifOverrides": {}
 }
