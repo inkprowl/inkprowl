@@ -117,4 +117,20 @@ describe("public media layout contracts", () => {
     expect(css).toContain(".archive-manifesto{padding:64px");
     expect(css).toContain(".detail-grid{grid-template-columns:minmax(0,1.5fr)");
   });
+
+  it("places the sponsor screening before discovery and provides practical soundtrack navigation", () => {
+    const home = source("client/src/pages/Home.tsx");
+    const chrome = source("client/src/components/InkprowlChrome.tsx");
+    const css = source("client/src/index.css");
+    expect(home.indexOf("archive-screening-prime")).toBeLessThan(home.indexOf("LATEST INTO THE ARCHIVE"));
+    expect(chrome).toContain("Previous soundtrack or restart");
+    expect(chrome).toContain("Rewind 15 seconds");
+    expect(chrome).toContain("Forward 15 seconds");
+    expect(chrome).toContain("Next soundtrack");
+    expect(chrome).toContain("publishedArtworks.filter((artwork) => Boolean(artwork.audioUrl))");
+    expect(chrome).toContain("player-compact-transport");
+    expect(css).toContain(".archive-screening-prime");
+    expect(css).toContain(".player-transport");
+    expect(css).toContain(".player-compact-transport");
+  });
 });

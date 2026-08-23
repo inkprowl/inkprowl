@@ -227,3 +227,4 @@
 - [x] Restore a visible, dismissible header advertising placement using a configured display-ad provider code while keeping the non-visual Popunder script unmounted.
 - [x] Add bulk artwork selection and one confirmed deletion action in Art Inventory that permanently removes selected Cloudinary media and catalogue records, then provides an immediate cache-busting public refresh link.
 - [x] Redesign the public storefront as a media-first 1960s vintage comic-art marketplace: reduce competing copy, enlarge artwork displays, and add prominent latest uploads, trending artwork, and related-art discovery sections.
+- [ ] Move the sponsor video above homepage discovery content, add previous/next and short skip controls to the soundtrack player, and deepen the public styling with coloured 1960s comic-print dimensional details.
