@@ -207,4 +207,22 @@ describe("public media layout contracts", () => {
     expect(home).not.toContain("heroViewerOpen");
     expect(home).not.toContain("FullscreenInspectionViewer");
   });
+
+  it("gives the owner Admin the same paper, green, ink, and comic-brand treatment as the storefront", () => {
+    const admin = source("client/src/pages/Admin.tsx");
+    const dashboard = source("client/src/components/OwnerLaunchDashboard.tsx");
+    const css = source("client/src/pages/adminRetroTheme.css");
+    const mobileCss = source("client/src/pages/adminRetroMobile.css");
+    expect(admin).toContain("<Mark />");
+    expect(admin).toContain('import "./adminRetroTheme.css";');
+    expect(admin).toContain('import "./adminRetroMobile.css";');
+    expect(dashboard).toContain('className="owner-desk-brand"');
+    expect(css).toContain("INKPROWL ADMIN — storefront-matched pressroom treatment");
+    expect(css).toContain("--admin-green:#2f5f5a");
+    expect(css).toContain("OWNER’S PRESSROOM");
+    expect(css).toContain(".owner-login-topline .brand-word");
+    expect(css).toContain(".owner-workspace-card.major{background:var(--admin-green)");
+    expect(css).toContain(".owner-advanced-overlay{background:rgba(23,66,62,.78)");
+    expect(mobileCss).toContain(".owner-login-topline .brand-word{display:block!important");
+  });
 });
