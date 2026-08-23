@@ -96,9 +96,11 @@ describe("public media layout contracts", () => {
     const catalogue = source("client/src/data/catalog.ts");
     expect(chrome).toContain("dismissible-header-ad");
     expect(chrome).toContain("Hide header advertisement");
+    expect(chrome).toContain("MutationObserver");
     expect(chrome).toContain('placement="leaderboard-728x90"');
     expect(chrome).toContain('placement="mobile-320x50"');
     expect(advertisingCss).toContain(".dismissible-header-ad");
+    expect(advertisingCss).toContain(".dismissible-header-ad.is-waiting");
     expect(catalogue).toContain('if (placement === "popunder") return false;');
   });
 });
