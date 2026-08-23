@@ -8,6 +8,7 @@ describe("artwork upload drafts", () => {
     expect(draft.title).toBe("Velvet Fox In Blue");
     expect(draft.category).toBe("Business Animals");
     expect(draft.description).toContain("Velvet Fox In Blue");
+    expect(draft.description).not.toMatch(/cloudinary|storage|queue|github/i);
     expect(draft.tags).toContain("velvet");
     expect(draft.metaTitle).toBe("INKPROWL — Velvet Fox In Blue");
     expect(draft.metaDescription).toBe(draft.description.slice(0, 155));

@@ -13,7 +13,7 @@ export function titleFromArtworkFilename(filename: string) {
 }
 
 export function artworkDescription(title: string, category: string) {
-  return `A free INKPROWL ${category.toLowerCase()} edition featuring ${title}. Available in JPEG, PNG, and WebP directly from permanent Cloudinary storage.`;
+  return `An INKPROWL ${category.toLowerCase()} artwork featuring ${title}, created in a vintage editorial line-art style.`;
 }
 
 export function artworkTags(title: string, category: string) {

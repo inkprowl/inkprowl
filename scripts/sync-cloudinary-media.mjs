@@ -114,7 +114,7 @@ function applyUpload(catalogue, asset, result) {
       slug: asset.slug,
       title: asset.title,
       category: asset.category,
-      description: `A free INKPROWL edition of ${asset.title}, published from the owner upload queue and ready for direct Cloudinary download.`,
+      description: `An INKPROWL ${asset.category.toLowerCase()} artwork featuring ${asset.title}, created in a vintage editorial line-art style.`,
       isPremium: false,
       accent: "gold",
       imageUrl: record.deliveryUrl,
@@ -144,6 +144,18 @@ function applyUpload(catalogue, asset, result) {
   if (asset.kind === "edition-video") Object.assign(catalogue.artworkMedia, { [asset.slug]: { ...(catalogue.artworkMedia[asset.slug] ?? {}), videoUrl: record.deliveryUrl } });
 }
 
+function refreshGeneratedArtworkDescriptions(catalogue) {
+  let changed = false;
+  for (const artwork of catalogue.artworks ?? []) {
+    const description = typeof artwork.description === "string" ? artwork.description : "";
+    const generatedOperationalCopy = description.includes("published from the owner upload queue") || description.includes("permanent Cloudinary storage");
+    if (!generatedOperationalCopy) continue;
+    artwork.description = `An INKPROWL ${(artwork.category ?? "art").toLowerCase()} artwork featuring ${artwork.title}, created in a vintage editorial line-art style.`;
+    changed = true;
+  }
+  return changed;
+}
+
 function removeAsset(catalogue, key) {
   const asset = catalogue.assets?.[key];
   if (!asset) throw new Error(`No managed Cloudinary asset uses the key ${key}. Open generated-catalog.json to copy an available asset key.`);
@@ -154,6 +166,7 @@ function removeAsset(catalogue, key) {
 
 async function main() {
   const catalogue = readCatalogue();
+  const descriptionsRefreshed = refreshGeneratedArtworkDescriptions(catalogue);
   if (operation === "delete") {
     if (!requestedAssetKey) throw new Error("Provide an asset key when running the delete operation.");
     await removeAsset(catalogue, requestedAssetKey);
@@ -166,13 +179,13 @@ async function main() {
   const removedKeys = await reconcileMissingCloudinaryAssets(catalogue, cloudinaryResourceExists);
   for (const key of removedKeys) console.log(`Removed stale catalogue record for missing Cloudinary asset ${key}.`);
   if (operation === "reconcile") {
-    if (removedKeys.length) writeCatalogue(catalogue);
+    if (removedKeys.length || descriptionsRefreshed) writeCatalogue(catalogue);
     console.log(removedKeys.length ? `Reconciled ${removedKeys.length} missing Cloudinary asset(s).` : "No stale managed Cloudinary assets found.");
     return;
   }
   const files = allFiles(incomingRoot);
   if (!files.length) {
-    if (removedKeys.length) writeCatalogue(catalogue);
+    if (removedKeys.length || descriptionsRefreshed) writeCatalogue(catalogue);
     console.log("No incoming media files found.");
     return;
   }

@@ -57,4 +57,16 @@ describe("public media layout contracts", () => {
     expect(card).toContain("if (imageFailed) return null;");
     expect(card).toContain("if (imageFailed && onImageError) return null;");
   });
+
+  it("keeps public artwork copy art-focused and makes same-tab refresh reuse clear to the owner", () => {
+    const drafts = source("client/src/lib/artworkUploadDrafts.ts");
+    const sync = source("scripts/sync-cloudinary-media.mjs");
+    const admin = source("client/src/pages/Admin.tsx");
+    const dashboard = source("client/src/components/OwnerLaunchDashboard.tsx");
+    expect(drafts).not.toContain("permanent Cloudinary storage");
+    expect(sync).not.toContain("ready for direct Cloudinary download");
+    expect(sync).toContain("refreshGeneratedArtworkDescriptions");
+    expect(admin).toContain("keeps the verified owner session through refresh");
+    expect(dashboard).toContain("Refresh keeps the connection");
+  });
 });

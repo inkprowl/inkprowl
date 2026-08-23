@@ -1,2 +1,2 @@
-# INKPROWL owner media queue marker: retry 3
-# This directory is the GitHub owner upload queue. Keep this marker when no media is awaiting Cloudinary synchronization; regenerated-credential validation is ready to run.
+# INKPROWL owner media queue marker: refresh public artwork copy
+# This directory is kept when no media is awaiting Cloudinary synchronization; this marker contains no customer media and is ignored by the worker.
