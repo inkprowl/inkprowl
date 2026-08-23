@@ -220,4 +220,5 @@
 - [x] Configure and test the owner-provided Native Banner, Social Bar, 300×250, 728×90, and 320×50 visible advertising snippets in their matching public placements while retaining the Popunder code as an inactive stored configuration.
 - [x] Remove the Native Banner, Social Bar, and 300×250 Admin code boxes and public placeholders, and show the remaining enabled banner ads on individual artwork pages without obscuring the artwork or media controls.
 - [x] Restore Native Banner, Social Bar, and between-grid advertising controls and placements; show enabled ads on individual artwork pages; and investigate unsafe advertiser-destination certificate warnings without treating third-party links as trusted.
-- [ ] Repair artwork sharing so social-media links expose the individual artwork image, title, and description as a preview.
+- [x] Repair artwork sharing so social-media links expose the individual artwork image, title, and description as a preview.
+- [ ] Repair the mobile artwork zoom so an enlarged edition can be inspected at full scale and panned without being constrained to a small square stage; retain the Popunder code as stored but unmounted to prevent site-wide click redirects.

@@ -73,16 +73,20 @@ describe("public media layout contracts", () => {
     expect(detail).not.toContain("permanent Cloudinary edition");
   });
 
-  it("uses touch-first pinch and drag controls instead of visible individual-artwork zoom buttons", () => {
+  it("uses touch-first pinch and drag controls with a full-screen viewer for complete individual-artwork inspection", () => {
     const detail = source("client/src/pages/ArtworkDetail.tsx");
     const mediaCss = source("client/src/components/inkprowlMedia.css");
     expect(detail).toContain("onPointerDown={handlePointerDown}");
     expect(detail).toContain("onPointerMove={handlePointerMove}");
-    expect(detail).toContain("onDoubleClick={() => commitZoom");
+    expect(detail).toContain("FullscreenArtworkViewer");
+    expect(detail).toContain("Open full-screen artwork");
     expect(detail).toContain("Pinch with two fingers to zoom");
     expect(detail).not.toContain("artwork-zoom-toolbar");
     expect(detail).not.toContain("ZoomIn");
     expect(mediaCss).toContain("touch-action: none");
     expect(mediaCss).toContain(".artwork-zoom-stage.is-zoomed");
+    expect(mediaCss).toContain(".artwork-fullscreen-dialog");
+    expect(mediaCss).toContain(".artwork-fullscreen-content .art-image");
+    expect(mediaCss).toContain("object-fit: contain");
   });
 });
