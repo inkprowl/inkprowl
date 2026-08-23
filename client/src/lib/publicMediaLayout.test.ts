@@ -173,4 +173,15 @@ describe("public media layout contracts", () => {
     expect(retroCss).toContain(".retro-category-tile{display:flex;min-height:58px;align-items:center");
     expect(retroCss).toContain(".site-shell .menu-button{display:inline-flex!important;align-items:center");
   });
+
+  it("uses a larger teal, mustard, and rust comic masthead on desktop without changing the compact phone header", () => {
+    const retroCss = source("client/src/retro-market.css");
+    expect(retroCss).toContain("Desktop masthead: larger, inked display type");
+    expect(retroCss).toContain(".site-shell .site-header{background:#f7e8c9;border-top:7px solid #2f5f5a");
+    expect(retroCss).toContain(".site-shell .brand-seal{width:62px;height:62px");
+    expect(retroCss).toContain(".site-shell .brand-word{display:inline;color:#2f5f5a");
+    expect(retroCss).toContain(".site-shell .main-nav a{padding:12px 16px");
+    expect(retroCss).toContain(".site-shell .main-nav a.active,.site-shell .main-nav a:hover{color:#fff4d7;background:#2f5f5a");
+    expect(retroCss).toContain("@media(max-width:760px){.site-shell .header-inner{position:relative");
+  });
 });
