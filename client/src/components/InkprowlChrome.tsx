@@ -1,7 +1,7 @@
 import { Link, useLocation } from "wouter";
 import "./inkprowlMedia.css";
 import "./subjectSafeVideo.css";
-import { Download, FastForward, Film, ListMusic, Menu, Minimize2, Music2, Pause, Play, Rewind, Search, SkipBack, SkipForward, Volume2, X } from "lucide-react";
+import { Download, FastForward, Film, GripVertical, ListMusic, Menu, Minimize2, Music2, Pause, Play, Rewind, Search, SkipBack, SkipForward, Volume2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, type PointerEvent } from "react";
 import { advertisingSettings, getAdvertisementProviderCodes, publishedArtworks, siteBranding, siteMedia } from "@/data/catalog";
 import { AdSlot } from "@/components/ArtworkCard";
@@ -132,8 +132,8 @@ export function FloatingPlayer() {
     if (!audioRef.current) return;
     audioRef.current.currentTime = Math.max(0, Math.min(audioRef.current.duration || Number.POSITIVE_INFINITY, audioRef.current.currentTime + seconds));
   };
-  const beginDrag = (event: PointerEvent<HTMLDivElement>) => {
-    if ((event.target as HTMLElement).closest("button,input,a")) return;
+  const beginDrag = (event: PointerEvent<HTMLButtonElement>) => {
+    event.preventDefault();
     event.currentTarget.setPointerCapture(event.pointerId);
     dragStart.current = { x: event.clientX, y: event.clientY, offsetX: position.x, offsetY: position.y };
   };
@@ -144,8 +144,9 @@ export function FloatingPlayer() {
   const endDrag = () => { dragStart.current = null; };
   if (dismissed) return <button type="button" className="player-reopen" onClick={() => setDismissed(false)} aria-label="Show music player"><Music2 size={17} /> Music</button>;
   return (
-    <div className={`floating-player ${minimized ? "is-minimized" : ""}`} aria-label="INKPROWL music player" onPointerDown={beginDrag} onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag} style={{ transform: `translate(${position.x}px, ${position.y}px)` }}>
+    <div className={`floating-player ${minimized ? "is-minimized" : ""}`} aria-label="INKPROWL music player" onPointerMove={moveDrag} onPointerUp={endDrag} onPointerCancel={endDrag} style={{ transform: `translate(${position.x}px, ${position.y}px)` }}>
       {activeTrack?.url && <audio key={activeTrack.url} ref={audioRef} src={activeTrack.url} onEnded={() => playlist.length > 1 ? moveTrack(1) : setPlaying(false)} />}
+      <button type="button" className="player-drag-handle" onPointerDown={beginDrag} aria-label="Move music player" title="Drag to move music player"><GripVertical size={14} /><span>MOVE</span></button>
       <button onClick={togglePlayback} disabled={!soundtrackReady} className="floating-play" aria-label={playing ? "Pause soundtrack" : soundtrackReady ? "Play soundtrack" : "Soundtrack is not configured"} title={soundtrackReady ? "Play soundtrack" : "Owner can add a Cloudinary audio URL in the catalog"}>
         {playing ? <Pause size={15} fill="currentColor" /> : <Play size={15} fill="currentColor" />}
       </button>

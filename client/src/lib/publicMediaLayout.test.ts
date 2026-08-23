@@ -129,8 +129,11 @@ describe("public media layout contracts", () => {
     expect(chrome).toContain("Next soundtrack");
     expect(chrome).toContain("publishedArtworks.filter((artwork) => Boolean(artwork.audioUrl))");
     expect(chrome).toContain("player-compact-transport");
+    expect(chrome).toContain("player-drag-handle");
+    expect(chrome).toContain("Move music player");
     expect(css).toContain(".archive-screening-prime");
     expect(css).toContain(".player-transport");
     expect(css).toContain(".player-compact-transport");
+    expect(css).toContain(".hero-art-wrap:before");
   });
 });
