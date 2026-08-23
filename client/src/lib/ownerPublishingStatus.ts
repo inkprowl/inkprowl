@@ -44,6 +44,14 @@ export const preparingArtworkDeletionStatus = (): OwnerPublishStatus => ({
   message: "Preparing the permanent Cloudinary image deletion…",
 });
 
+export function preparingBulkArtworkDeletionStatus(total: number): OwnerPublishStatus {
+  return {
+    percent: 18,
+    tone: "working",
+    message: `Preparing ${total} artwork${total === 1 ? "" : "s"} for permanent Cloudinary deletion…`,
+  };
+}
+
 export const requestingCloudinaryDeletionStatus = (): OwnerPublishStatus => ({
   percent: 45,
   tone: "working",
@@ -55,6 +63,15 @@ export const cloudinaryDeletionQueuedStatus = (): OwnerPublishStatus => ({
   tone: "success",
   message: "Removal requested. The protected workflow will delete the Cloudinary asset, update the catalogue, and rebuild the site.",
 });
+
+export function cloudinaryBulkDeletionQueuedStatus(total: number): OwnerPublishStatus {
+  return {
+    percent: 100,
+    tone: "success",
+    message: `${total} artwork${total === 1 ? "" : "s"} queued for permanent Cloudinary deletion. The catalogue is hidden immediately and the public site will rebuild after the protected workflow finishes.`,
+    publicRefreshUrl: publicRefreshUrl(),
+  };
+}
 
 export function deletionFailureStatus(reason?: string): OwnerPublishStatus {
   return {

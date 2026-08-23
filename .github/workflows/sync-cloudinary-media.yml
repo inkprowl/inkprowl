@@ -8,13 +8,17 @@ on:
   workflow_dispatch:
     inputs:
       operation:
-        description: "sync processes incoming files and reconciles stale assets; delete removes one managed asset; reconcile scans managed Cloudinary assets"
+        description: "sync processes incoming files and reconciles stale assets; delete removes one managed asset; bulk-delete removes selected managed assets; reconcile scans managed Cloudinary assets"
         required: true
         default: "sync"
         type: choice
-        options: [sync, delete, reconcile]
+        options: [sync, delete, bulk-delete, reconcile]
       asset_key:
         description: "Required only for delete; copy it from generated-catalog.json"
+        required: false
+        type: string
+      asset_keys:
+        description: "Required only for bulk-delete; newline-separated managed asset keys"
         required: false
         type: string
 
@@ -48,6 +52,9 @@ jobs:
       - name: Delete selected managed media
         if: ${{ inputs.operation == 'delete' }}
         run: pnpm tsx scripts/sync-cloudinary-media.mjs delete "${{ inputs.asset_key }}"
+      - name: Bulk delete selected managed media
+        if: ${{ inputs.operation == 'bulk-delete' }}
+        run: pnpm tsx scripts/sync-cloudinary-media.mjs bulk-delete "${{ inputs.asset_keys }}"
       - name: Reconcile missing managed Cloudinary media
         if: ${{ inputs.operation == 'reconcile' }}
         run: pnpm tsx scripts/sync-cloudinary-media.mjs reconcile

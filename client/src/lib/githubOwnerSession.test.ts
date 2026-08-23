@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { dispatchCloudinaryDeletion, emptyOwnerCatalogue, mutateGeneratedCatalogue, normalizeOwnerCatalogue, queueIncomingFile, readRepositoryJson, toBase64, verifyGitHubOwnerSession, writeRepositoryJson } from "./githubOwnerSession";
+import { dispatchCloudinaryBulkDeletion, dispatchCloudinaryDeletion, emptyOwnerCatalogue, mutateGeneratedCatalogue, normalizeCloudinaryDeletionKeys, normalizeOwnerCatalogue, queueIncomingFile, readRepositoryJson, toBase64, verifyGitHubOwnerSession, writeRepositoryJson } from "./githubOwnerSession";
 
 const response = (body: unknown, status = 200) => new Response(status === 204 ? null : JSON.stringify(body), { status, headers: { "Content-Type": "application/json" } });
 
@@ -149,5 +149,17 @@ describe("INKPROWL owner GitHub session helpers", () => {
     const [dispatchPath, dispatchInit] = fetchMock.mock.calls[1] as [string, RequestInit];
     expect(dispatchPath).toContain("sync-cloudinary-media.yml/dispatches");
     expect(JSON.parse(String(dispatchInit.body))).toEqual({ ref: "main", inputs: { operation: "delete", asset_key: "inkprowl/artworks/owl" } });
+  });
+
+  it("deduplicates selected managed keys and dispatches them as a protected bulk delete", async () => {
+    const fetchMock = vi.fn().mockResolvedValueOnce(response({}, 204));
+    vi.stubGlobal("fetch", fetchMock);
+
+    expect(normalizeCloudinaryDeletionKeys([" artwork:owl ", "", "artwork:fox", "artwork:owl"])).toEqual(["artwork:owl", "artwork:fox"]);
+    await dispatchCloudinaryBulkDeletion("session-token", [" artwork:owl ", "artwork:fox", "artwork:owl"]);
+
+    const [dispatchPath, dispatchInit] = fetchMock.mock.calls[0] as [string, RequestInit];
+    expect(dispatchPath).toContain("sync-cloudinary-media.yml/dispatches");
+    expect(JSON.parse(String(dispatchInit.body))).toEqual({ ref: "main", inputs: { operation: "bulk-delete", asset_keys: "artwork:owl\nartwork:fox" } });
   });
 });

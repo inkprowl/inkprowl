@@ -184,6 +184,20 @@ export async function dispatchCloudinaryDeletion(token: string, assetKey: string
   });
 }
 
+export function normalizeCloudinaryDeletionKeys(assetKeys: readonly string[]) {
+  return Array.from(new Set(assetKeys.map((assetKey) => assetKey.trim()).filter(Boolean)));
+}
+
+export async function dispatchCloudinaryBulkDeletion(token: string, assetKeys: readonly string[]) {
+  const keys = normalizeCloudinaryDeletionKeys(assetKeys);
+  if (!keys.length) throw new Error("Select at least one managed artwork before requesting permanent deletion.");
+  return githubRequest(token, `/repos/${REPOSITORY}/actions/workflows/sync-cloudinary-media.yml/dispatches`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ref: "main", inputs: { operation: "bulk-delete", asset_keys: keys.join("\n") } }),
+  });
+}
+
 export function emptyOwnerCatalogue(): OwnerGeneratedCatalogue {
   return {
     artworks: [],

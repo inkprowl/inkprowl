@@ -225,3 +225,4 @@
 - [x] Confirm and implement an owner-approved visible click-only advertising option; retain the stored Popunder code unmounted because it cannot display as a safe visible ad without intercepting ordinary page clicks.
 - [x] Document the Popunder format limitation: it has no visible creative and cannot be enabled as a display ad without restoring broad click-triggered external redirects.
 - [x] Restore a visible, dismissible header advertising placement using a configured display-ad provider code while keeping the non-visual Popunder script unmounted.
+- [ ] Add bulk artwork selection and one confirmed deletion action in Art Inventory that permanently removes selected Cloudinary media and catalogue records, then provides an immediate cache-busting public refresh link.

@@ -8,7 +8,7 @@ const projectRoot = path.resolve(import.meta.dirname, "..");
 const incomingRoot = path.join(projectRoot, "incoming");
 const cataloguePath = path.join(projectRoot, "client", "src", "data", "generated-catalog.json");
 const operation = process.argv[2] ?? "sync";
-const requestedAssetKey = process.argv[3];
+const requestedAssetKeys = String(process.argv[3] ?? "").split(/[\n,]+/).map((key) => key.trim()).filter(Boolean);
 
 const rawCloudinaryUrl = (process.env.CLOUDINARY_URL ?? "").trim();
 const cloudinaryUrl = rawCloudinaryUrl.replace(/^CLOUDINARY_URL\s*=\s*/i, "");
@@ -164,14 +164,30 @@ function removeAsset(catalogue, key) {
   });
 }
 
+async function removeAssets(catalogue, keys) {
+  const uniqueKeys = [...new Set(keys)];
+  if (!uniqueKeys.length) throw new Error("Provide at least one managed asset key when running a delete operation.");
+  const missingKeys = uniqueKeys.filter((key) => !catalogue.assets?.[key]);
+  if (missingKeys.length) throw new Error(`No managed Cloudinary asset uses: ${missingKeys.join(", ")}. No deletion was started.`);
+  for (const key of uniqueKeys) await removeAsset(catalogue, key);
+  return uniqueKeys;
+}
+
 async function main() {
   const catalogue = readCatalogue();
   const descriptionsRefreshed = refreshGeneratedArtworkDescriptions(catalogue);
   if (operation === "delete") {
-    if (!requestedAssetKey) throw new Error("Provide an asset key when running the delete operation.");
-    await removeAsset(catalogue, requestedAssetKey);
+    if (requestedAssetKeys.length !== 1) throw new Error("Provide exactly one asset key when running the delete operation.");
+    const [requestedAssetKey] = await removeAssets(catalogue, requestedAssetKeys);
     writeCatalogue(catalogue);
     console.log(`Deleted Cloudinary asset ${requestedAssetKey} and updated the generated catalogue.`);
+    return;
+  }
+
+  if (operation === "bulk-delete") {
+    const deletedKeys = await removeAssets(catalogue, requestedAssetKeys);
+    writeCatalogue(catalogue);
+    console.log(`Deleted ${deletedKeys.length} Cloudinary asset(s) and updated the generated catalogue.`);
     return;
   }
 

@@ -1,10 +1,10 @@
 import { type ChangeEvent, useEffect, useMemo, useState } from "react";
 import { ArrowUpRight, CheckCircle2, Film, ImagePlus, LoaderCircle, LogOut, Music2, Pencil, Plus, Save, Tags, Trash2, UploadCloud, XCircle } from "lucide-react";
 import { artworks, categories, siteBranding } from "@/data/catalog";
-import { GENERATED_CATALOGUE_PATH, type ManagedCloudinaryAsset, type OwnerGeneratedCatalogue, dispatchCloudinaryDeletion, mutateGeneratedCatalogue, normalizeOwnerCatalogue, queueIncomingFile, readRepositoryJson, recentGeneratedCatalogueRevision } from "@/lib/githubOwnerSession";
+import { GENERATED_CATALOGUE_PATH, type ManagedCloudinaryAsset, type OwnerGeneratedCatalogue, dispatchCloudinaryBulkDeletion, dispatchCloudinaryDeletion, mutateGeneratedCatalogue, normalizeOwnerCatalogue, queueIncomingFile, readRepositoryJson, recentGeneratedCatalogueRevision } from "@/lib/githubOwnerSession";
 import { artworkDescription, artworkTags, createArtworkUploadDraft, type ArtworkUploadDraft, titleFromArtworkFilename, updateArtworkUploadDraft } from "@/lib/artworkUploadDrafts";
 import { applyCategoryOperation, categoryOperationValidationMessage, resolvedCategoryNames } from "@/lib/ownerCatalogueOps";
-import { authorizationPendingStatus, catalogueSavedStatus, cloudinaryDeletionQueuedStatus, deletionFailureStatus, initialOwnerPublishStatus, type OwnerPublishStatus, preparingArtworkDeletionStatus, publishFailureStatus, publishHandoffStatus, queuedForCloudinaryStatus, requestingCloudinaryDeletionStatus, savingArtworkMetadataStatus, savingCatalogueStatus, uploadToQueueStatus } from "@/lib/ownerPublishingStatus";
+import { authorizationPendingStatus, catalogueSavedStatus, cloudinaryBulkDeletionQueuedStatus, cloudinaryDeletionQueuedStatus, deletionFailureStatus, initialOwnerPublishStatus, type OwnerPublishStatus, preparingArtworkDeletionStatus, preparingBulkArtworkDeletionStatus, publishFailureStatus, publishHandoffStatus, queuedForCloudinaryStatus, requestingCloudinaryDeletionStatus, savingArtworkMetadataStatus, savingCatalogueStatus, uploadToQueueStatus } from "@/lib/ownerPublishingStatus";
 import { ownerUploadAccept, type OwnerUploadRole, validateOwnerUploadFiles } from "@/lib/ownerUploadRules";
 import { ownerUploadFailureMessage } from "@/lib/ownerUploadFailure";
 import "./ownerPublishStatus.css";
@@ -25,7 +25,7 @@ type InventoryArtwork = { slug: string; title: string; description: string; cate
 type ArtworkFileDraft = ArtworkUploadDraft & { file: File };
 type PendingPublish = { role: PublishRole; files: File[]; title: string; category: string; description?: string; tags?: string[]; artist?: string; artworkDrafts?: ArtworkFileDraft[] };
 type PendingMutation = { message: string; success: string; mutate: (next: OwnerGeneratedCatalogue) => void };
-type PendingDeletion = { assetKey: string; artwork?: InventoryArtwork };
+type PendingDeletion = { assetKey?: string; artwork?: InventoryArtwork; artworks?: InventoryArtwork[] };
 
 function titleFromFilename(filename: string) {
   return titleFromArtworkFilename(filename);
@@ -74,6 +74,12 @@ function filenameFor(role: PublishRole, file: File, title: string, category: str
   return `hero-banner--${recordTitle}.${extension}`;
 }
 
+function BulkArtworkDeletionPanel({ visible, artworks, selectedSlugs, busy, onToggle, onSelectAll, onClear, onDelete }: { visible: boolean; artworks: InventoryArtwork[]; selectedSlugs: readonly string[]; busy: boolean; onToggle: (slug: string) => void; onSelectAll: () => void; onClear: () => void; onDelete: () => void }) {
+  if (!visible) return null;
+  const selected = new Set(selectedSlugs);
+  return <section className="owner-bulk-delete-panel" aria-labelledby="bulk-delete-title"><div className="owner-card-title"><div><span className="eyebrow">BULK PERMANENT REMOVAL</span><h4 id="bulk-delete-title">Select editions to delete</h4><p>Selected images are hidden from the public catalogue first, then the protected workflow removes their managed Cloudinary files together.</p></div><span>{selected.size} selected</span></div><div className="owner-bulk-delete-actions"><button type="button" className="admin-secondary-action" onClick={onSelectAll} disabled={!artworks.length || busy}>Select all</button><button type="button" className="admin-secondary-action" onClick={onClear} disabled={!selected.size || busy}>Clear selection</button></div><div className="owner-bulk-artwork-list">{artworks.map((artwork) => <label key={artwork.slug}><input type="checkbox" checked={selected.has(artwork.slug)} disabled={busy} onChange={() => onToggle(artwork.slug)} /><img src={artwork.imageUrl} alt="" /><span><strong>{artwork.title}</strong><small>{artwork.category}</small></span></label>)}</div><button type="button" className="admin-danger-action owner-bulk-delete-submit" disabled={!selected.size || busy} onClick={onDelete}><Trash2 size={16} /> {busy ? "Deletion in progress…" : `Delete ${selected.size} selected image${selected.size === 1 ? "" : "s"} permanently`}</button><p className="owner-delete-note">This cannot be undone. The public gallery is hidden immediately; the Cloudinary deletion and Pages refresh run in the protected workflow.</p></section>;
+}
+
 export function OwnerLaunchDashboard({ connection, requestAuthorization, onLogout, onOpenAdvanced }: { connection: OwnerConnection | null; requestAuthorization: () => void; onLogout: () => void; onOpenAdvanced: (panel: "video" | "brand" | "ads") => void }) {
   const [catalogue, setCatalogue] = useState<OwnerGeneratedCatalogue | null>(null);
   const [artworkFiles, setArtworkFiles] = useState<File[]>([]);
@@ -98,6 +104,7 @@ export function OwnerLaunchDashboard({ connection, requestAuthorization, onLogou
   const [pendingMutation, setPendingMutation] = useState<PendingMutation | null>(null);
   const [pendingDeletion, setPendingDeletion] = useState<PendingDeletion | null>(null);
   const [selectedSlug, setSelectedSlug] = useState(artworks[0]?.slug ?? "");
+  const [bulkArtworkSlugs, setBulkArtworkSlugs] = useState<string[]>([]);
   const artworkInventory = useMemo<InventoryArtwork[]>(() => {
     const items = new Map<string, InventoryArtwork>(artworks.map((artwork) => [artwork.slug, { slug: artwork.slug, title: artwork.title, description: artwork.description, category: artwork.category, tags: artwork.tags, imageUrl: artwork.imageUrl ?? "" }]));
     for (const record of catalogue?.artworks ?? []) {
@@ -116,6 +123,7 @@ export function OwnerLaunchDashboard({ connection, requestAuthorization, onLogou
     return Array.from(items.values());
   }, [catalogue]);
   const selectedArtwork = artworkInventory.find((artwork) => artwork.slug === selectedSlug) ?? artworkInventory[0];
+  const selectedBulkArtworks = artworkInventory.filter((artwork) => bulkArtworkSlugs.includes(artwork.slug));
   const [editTitle, setEditTitle] = useState(selectedArtwork?.title ?? "");
   const [editDescription, setEditDescription] = useState(selectedArtwork?.description ?? "");
   const [editCategory, setEditCategory] = useState(selectedArtwork?.category ?? categories[0]?.name ?? "Business Animals");
@@ -138,6 +146,10 @@ export function OwnerLaunchDashboard({ connection, requestAuthorization, onLogou
     setEditCategory(String(override.category ?? selectedArtwork.category));
     setEditTags(Array.isArray(override.tags) ? override.tags.join(", ") : selectedArtwork.tags.join(", "));
   }, [selectedArtwork?.slug, catalogue]);
+
+  useEffect(() => {
+    setBulkArtworkSlugs((current) => current.filter((slugValue) => artworkInventory.some((artwork) => artwork.slug === slugValue)));
+  }, [artworkInventory]);
 
   useEffect(() => {
     setHeroFeaturedLabel(String(catalogue?.siteBranding?.heroFeaturedLabel ?? siteBranding.heroFeaturedLabel ?? "01 — FEATURED EDITION"));
@@ -309,8 +321,9 @@ export function OwnerLaunchDashboard({ connection, requestAuthorization, onLogou
     if (!connection || !pendingDeletion) return;
     const nextDeletion = pendingDeletion;
     setPendingDeletion(null);
-    if (nextDeletion.artwork) void removeSelectedArtwork(nextDeletion.artwork);
-    else void removeManagedAsset(nextDeletion.assetKey);
+    if (nextDeletion.artworks?.length) void removeSelectedArtworks(nextDeletion.artworks);
+    else if (nextDeletion.artwork) void removeSelectedArtwork(nextDeletion.artwork);
+    else if (nextDeletion.assetKey) void removeManagedAsset(nextDeletion.assetKey);
   }, [connection, pendingDeletion]);
 
   function chooseArtworkFiles(event: ChangeEvent<HTMLInputElement>) {
@@ -392,6 +405,39 @@ export function OwnerLaunchDashboard({ connection, requestAuthorization, onLogou
     await removeManagedAsset(assetKey);
   }
 
+  function toggleBulkArtwork(slugValue: string) {
+    setBulkArtworkSlugs((current) => current.includes(slugValue) ? current.filter((currentSlug) => currentSlug !== slugValue) : [...current, slugValue]);
+  }
+
+  async function removeSelectedArtworks(artworksToDelete = selectedBulkArtworks) {
+    if (!artworksToDelete.length) { setStatus(publishFailureStatus("Select one or more artwork images before choosing permanent deletion.")); return; }
+    if (!connection) {
+      setPendingDeletion({ artworks: artworksToDelete });
+      setStatus(authorizationPendingStatus("deletion"));
+      requestAuthorization();
+      return;
+    }
+    const deletions = artworksToDelete.map((artwork) => ({ artwork, assetKey: `artwork:${artwork.slug}`, asset: cloudinaryAssetFromDeliveryUrl(artwork.imageUrl) }));
+    const unremovable = deletions.filter(({ assetKey, asset }) => !catalogue?.assets[assetKey] && !asset).map(({ artwork }) => artwork.title);
+    if (unremovable.length) { setStatus(publishFailureStatus(`These images do not have a removable Cloudinary delivery record: ${unremovable.join(", ")}.`)); return; }
+    try {
+      setStatus(preparingBulkArtworkDeletionStatus(deletions.length));
+      const next = await mutateGeneratedCatalogue(connection.token, "chore: hide and remove INKPROWL artwork batch", (nextCatalogue) => {
+        for (const { artwork, assetKey, asset } of deletions) {
+          if (!nextCatalogue.assets[assetKey] && asset) nextCatalogue.assets[assetKey] = asset;
+          nextCatalogue.artworkOverrides[artwork.slug] = { ...(nextCatalogue.artworkOverrides[artwork.slug] ?? {}), isPublished: false };
+        }
+      });
+      setCatalogue(next);
+      setStatus({ percent: 35, tone: "working", message: `${deletions.length} artwork${deletions.length === 1 ? " is" : "s are"} now hidden from the public gallery. Permanent Cloudinary deletion is starting.` });
+      await dispatchCloudinaryBulkDeletion(connection.token, deletions.map(({ assetKey }) => assetKey));
+      setBulkArtworkSlugs([]);
+      setStatus(cloudinaryBulkDeletionQueuedStatus(deletions.length));
+    } catch (reason) {
+      setStatus(deletionFailureStatus(reason instanceof Error ? reason.message : "The artwork batch could not be hidden before Cloudinary deletion."));
+    }
+  }
+
   const workspaceDetail = workspace === "home" ? null : workspaceCopy[workspace];
   return <main className="owner-launch-dashboard" data-workspace={workspace} aria-label="INKPROWL media publishing dashboard">
     <header className="owner-launch-topbar"><div className="owner-desk-brand"><span className="brand-seal">IP</span><span>INKPROWL</span></div><span>OWNER ADMIN / CLOUDINARY DELIVERY</span><button type="button" className="owner-logout" onClick={onLogout}><LogOut size={15} /> Log out</button></header>
@@ -408,5 +454,6 @@ export function OwnerLaunchDashboard({ connection, requestAuthorization, onLogou
     </div>
     <div className="owner-management-grid workspace-inventory"><article className="owner-record-card"><div className="owner-card-title"><div><span className="eyebrow">ARTWORK INVENTORY</span><h4>Thumbnails, title & metadata</h4></div><span>{artworkInventory.length} editions</span></div><div className="owner-artwork-list">{artworkInventory.map((artwork) => <button type="button" key={artwork.slug} className={selectedSlug === artwork.slug ? "selected" : ""} onClick={() => setSelectedSlug(artwork.slug)}><img src={artwork.imageUrl} alt="" /><span><strong>{artwork.title}</strong><small>{artwork.category}</small></span><Pencil size={15} /></button>)}</div></article><article className="owner-record-card"><div className="owner-card-title"><div><span className="eyebrow">EDIT SELECTED EDITION</span><h4>{selectedArtwork?.title}</h4></div></div><div className="owner-edit-form"><label>Title <input value={editTitle} onChange={(event) => setEditTitle(event.target.value)} /></label><label>Description <textarea rows={3} value={editDescription} onChange={(event) => setEditDescription(event.target.value)} /></label><label>Category <select value={editCategory} onChange={(event) => setEditCategory(event.target.value)}>{categoryNames.map((name) => <option key={name}>{name}</option>)}</select></label><label>Tags <input value={editTags} onChange={(event) => setEditTags(event.target.value)} placeholder="vintage, animals, tailored" /></label><div className="meta-preview"><strong>Automatic public metadata</strong><span>Title: INKPROWL — {editTitle || selectedArtwork?.title}</span><span>Description: {(editDescription || selectedArtwork?.description || "").slice(0, 150)}</span></div><button type="button" className="admin-primary-action" onClick={() => void mutateCatalogue("chore: update INKPROWL artwork metadata", "Artwork title, description, category, tags, and public metadata are saved.", (next) => { if (!selectedArtwork) return; next.artworkOverrides[selectedArtwork.slug] = { ...(next.artworkOverrides[selectedArtwork.slug] ?? {}), title: editTitle.trim(), description: editDescription.trim(), category: editCategory, tags: editTags.split(",").map((tag) => tag.trim()).filter(Boolean), metaTitle: `INKPROWL — ${editTitle.trim()}`, metaDescription: editDescription.trim().slice(0, 155), isPublished: true }; })}><Save size={16} /> Save artwork details</button><button type="button" className="admin-secondary-action" onClick={() => void mutateCatalogue(selectedArtworkIsPublished ? "chore: unpublish INKPROWL artwork" : "chore: publish INKPROWL artwork", selectedArtworkIsPublished ? "Artwork is now hidden from the public gallery." : "Artwork is now published to the public gallery.", (next) => { if (!selectedArtwork) return; next.artworkOverrides[selectedArtwork.slug] = { ...(next.artworkOverrides[selectedArtwork.slug] ?? {}), isPublished: !selectedArtworkIsPublished }; })}>{selectedArtworkIsPublished ? "Hide from public gallery" : "Publish to public gallery"}</button><button type="button" className="admin-danger-action" onClick={() => void removeSelectedArtwork()}><Trash2 size={16} /> Delete image permanently</button><p className="owner-delete-note">This deletes the Cloudinary image and hides its edition from the public gallery after the protected workflow completes.</p></div></article></div>
     <div className="owner-management-grid workspace-categories"><article className="owner-record-card"><div className="owner-card-title"><div><span className="eyebrow">CATEGORIES</span><h4>Add, rename, or delete</h4></div><Tags size={19} /></div><div className="owner-edit-form"><label>Action <select value={categoryMode} onChange={(event) => setCategoryMode(event.target.value as "add" | "rename" | "retire")}><option value="add">Add category</option><option value="rename">Rename category</option><option value="retire">Delete category and move editions</option></select></label>{categoryMode !== "add" && <label>Existing category <select value={categorySource} onChange={(event) => setCategorySource(event.target.value)}>{categoryNames.map((name) => <option key={name}>{name}</option>)}</select></label>}<label>{categoryMode === "retire" ? "Move editions to category" : "Category label"}<input value={categoryLabel} onChange={(event) => setCategoryLabel(event.target.value)} placeholder="e.g. Editorial Animals" /></label><button type="button" className="admin-primary-action" onClick={saveCategoryAction}><Plus size={16} /> {categoryMode === "add" ? "Add category" : categoryMode === "rename" ? "Rename category" : "Delete category"}</button></div></article><article className="owner-record-card"><div className="owner-card-title"><div><span className="eyebrow">PERMANENT ASSET REMOVAL</span><h4>Cloudinary-managed files</h4></div><Trash2 size={19} /></div>{managedAssets.length ? <div className="managed-asset-list">{managedAssets.map(([key, asset]) => <div key={key}><span><strong>{key}</strong><small>{asset.resourceType} · Cloudinary</small></span><button type="button" className="admin-danger-action" onClick={() => void removeManagedAsset(key)}><Trash2 size={14} /> Delete</button></div>)}</div> : <p className="empty-managed-assets">Authorise a save to load the managed Cloudinary asset inventory.</p>}</article></div>
+    <BulkArtworkDeletionPanel visible={workspace === "inventory"} artworks={artworkInventory} selectedSlugs={bulkArtworkSlugs} busy={status.tone === "working"} onToggle={toggleBulkArtwork} onSelectAll={() => setBulkArtworkSlugs(artworkInventory.map((artwork) => artwork.slug))} onClear={() => setBulkArtworkSlugs([])} onDelete={() => { if (window.confirm(`Permanently delete ${selectedBulkArtworks.length} selected artwork image${selectedBulkArtworks.length === 1 ? "" : "s"} from the public gallery and Cloudinary? This cannot be undone.`)) void removeSelectedArtworks(); }} />
   </main>;
 }
