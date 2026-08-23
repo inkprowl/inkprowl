@@ -73,21 +73,23 @@ describe("public media layout contracts", () => {
     expect(detail).not.toContain("permanent Cloudinary edition");
   });
 
-  it("uses touch-first pinch and drag controls with a full-screen viewer for complete individual-artwork inspection", () => {
+  it("keeps phone artwork touches in the normal page layout and reserves the closeable viewer for larger screens", () => {
     const detail = source("client/src/pages/ArtworkDetail.tsx");
     const viewer = source("client/src/components/FullscreenInspectionViewer.tsx");
     const mediaCss = source("client/src/components/inkprowlMedia.css");
     expect(detail).toContain("FullscreenInspectionViewer");
     expect(detail).toContain("Open full-screen artwork");
-    expect(detail).toContain('event.pointerType === "touch" && window.matchMedia("(max-width: 760px)").matches');
-    expect(detail).toContain("tap to inspect the complete framed edition full-screen");
+    expect(detail).toContain('if (event.pointerType === "touch" && window.matchMedia("(max-width: 760px)").matches) return;');
+    expect(detail).toContain('window.matchMedia("(min-width: 761px)").matches');
+    expect(detail).toContain("On larger screens, use pinch and drag to inspect the artwork in place.");
     expect(detail).toContain("artwork-fullscreen-framed-layout");
     expect(detail).not.toContain("artwork-zoom-toolbar");
     expect(detail).not.toContain("ZoomIn");
     expect(viewer).toContain("onPointerDown={handlePointerDown}");
     expect(viewer).toContain("onPointerMove={handlePointerMove}");
     expect(viewer).toContain("Pinch the complete framed layout");
-    expect(mediaCss).toContain("touch-action: none");
+    expect(mediaCss).toContain(".artwork-zoom-stage { touch-action: auto; cursor: default; }");
+    expect(mediaCss).toContain(".artwork-zoom-note, .artwork-open-viewer { display: none; }");
     expect(mediaCss).toContain(".artwork-zoom-stage.is-zoomed");
     expect(mediaCss).toContain(".artwork-fullscreen-dialog");
     expect(mediaCss).toContain(".artwork-fullscreen-content .art-image");
@@ -194,13 +196,12 @@ describe("public media layout contracts", () => {
     expect(retroCss).toContain("font-size:clamp(25px,8.25vw,34px)");
   });
 
-  it("opens the complete green-framed hero layout in the same pinch-and-drag viewer on phone", () => {
+  it("keeps the hero in normal page flow without a touch-opened inspection window", () => {
     const home = source("client/src/pages/Home.tsx");
-    const mediaCss = source("client/src/components/inkprowlMedia.css");
-    expect(home).toContain("hero-inspection-trigger");
-    expect(home).toContain("openHeroViewerOnTouch");
-    expect(home).toContain("FullscreenInspectionViewer open={heroViewerOpen}");
-    expect(home).toContain("hero-fullscreen-framed-layout");
-    expect(mediaCss).toContain(".artwork-fullscreen-framed-stage");
+    expect(home).toContain('<div className="hero-art-wrap">');
+    expect(home).not.toContain("hero-inspection-trigger");
+    expect(home).not.toContain("openHeroViewerOnTouch");
+    expect(home).not.toContain("heroViewerOpen");
+    expect(home).not.toContain("FullscreenInspectionViewer");
   });
 });

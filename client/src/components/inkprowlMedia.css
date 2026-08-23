@@ -71,3 +71,9 @@
   .artwork-fullscreen-hint { padding-inline: 14px; }
   .artwork-fullscreen-framed-layout { width: min(100%, calc(100dvh - 146px)); }
 }
+
+/* Phone artwork interactions stay in the ordinary page flow; no closeable inspection window opens from a touch. */
+@media (max-width: 760px) {
+  .artwork-zoom-stage { touch-action: auto; cursor: default; }
+  .artwork-zoom-note, .artwork-open-viewer { display: none; }
+}
