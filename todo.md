@@ -210,4 +210,6 @@
 - [x] Remove GitHub, queue, storage, and publishing-process wording from public artwork descriptions so customer-facing copy describes the art only.
 - [x] Repair verified owner-session restoration so refresh and subsequent upload, edit, and delete actions reuse the same-tab authorization without repeatedly requesting a GitHub token.
 - [x] Repair Admin-managed Adsterra Popunder script saving, placement selection, toggle behavior, and designated public execution.
-- [ ] Replace individual artwork-page visible plus/minus zoom buttons with pinch-to-zoom and drag controls that work smoothly on touch screens.
+- [x] Replace individual artwork-page visible plus/minus zoom buttons with pinch-to-zoom and drag controls that work smoothly on touch screens.
+- [ ] Add safe stale-release recovery so mobile browsers reload the current build instead of failing on a missing dynamically imported JavaScript file.
+- [ ] Disable the site-wide Adsterra Popunder script so ordinary navigation clicks do not open unexpected advertising links; retain explicit non-Popunder placement controls for future ads.

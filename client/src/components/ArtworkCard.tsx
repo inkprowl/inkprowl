@@ -51,6 +51,7 @@ function ProviderCode({ provider, code, placement }: { provider: string; code?: 
 }
 
 export function AdSlot({ placement, label = "Selected partner placement" }: { placement: AdvertisingPlacement; label?: string }) {
+  if (placement === "popunder") return null;
   const providers = activeAdvertisementProviders(advertisingSettings);
   if (!isAdvertisementPlacementEnabled(placement)) return null;
   const placementCodes = advertisingSettings.placementCodes?.[placement];

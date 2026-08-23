@@ -117,5 +117,5 @@ export function CloudinaryVideoPlayer({ src, title, className = "", clientUrl, c
 }
 
 export function PageFrame({ children, dark = false }: { children: React.ReactNode; dark?: boolean }) {
-  return <div className={`site-shell ${dark ? "dark-surface" : ""}`}><Header /><main>{children}</main><AdSlot placement="popunder" label="Popunder placement" /><Footer /></div>;
+  return <div className={`site-shell ${dark ? "dark-surface" : ""}`}><Header /><main>{children}</main><Footer /></div>;
 }

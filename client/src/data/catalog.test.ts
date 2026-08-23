@@ -87,9 +87,10 @@ describe("INKPROWL catalog", () => {
     expect(isAdvertisementPlacementEnabled("footer", { adsenseEnabled: false, adsterraEnabled: false, placements: { footer: true } })).toBe(false);
   });
 
-  it("activates a saved Adsterra Popunder code unless the owner explicitly turns that placement off", () => {
+  it("keeps Popunder code dormant so ordinary site clicks never launch an unexpected ad link", () => {
     const configuredPopunder = { adsenseEnabled: false, adsterraEnabled: true, placements: {}, placementCodes: { popunder: { adsterra: '<script src="https://example.test/popunder.js"></script>' } } };
-    expect(isAdvertisementPlacementEnabled("popunder", configuredPopunder)).toBe(true);
+    expect(isAdvertisementPlacementEnabled("popunder", configuredPopunder)).toBe(false);
+    expect(isAdvertisementPlacementEnabled("popunder", { ...configuredPopunder, placements: { popunder: true } })).toBe(false);
     expect(isAdvertisementPlacementEnabled("popunder", { ...configuredPopunder, placements: { popunder: false } })).toBe(false);
   });
 
