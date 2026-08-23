@@ -1,6 +1,31 @@
 {
   "artworks": [
     {
+      "slug": "vintage-noir-comic-panel-black-panther-detective-examines-paw-print",
+      "title": "Vintage Noir Comic Panel Black Panther Detective Examines Paw Print",
+      "category": "Business Animals",
+      "description": "An INKPROWL business animals artwork featuring Vintage Noir Comic Panel Black Panther Detective Examines Paw Print, created in a vintage editorial line-art style.",
+      "isPremium": false,
+      "accent": "gold",
+      "imageUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787496772/inkprowl/916bd1fc-7f65-4877-9a74-453f6c13327b/vintage-noir-comic-panel-black-panther-detective-examines-paw-print.png",
+      "orientation": "square",
+      "tags": [
+        "vintage",
+        "noir",
+        "comic",
+        "panel",
+        "black",
+        "panther"
+      ],
+      "downloadFormats": [
+        "jpg",
+        "png",
+        "webp"
+      ],
+      "assetKey": "artwork:vintage-noir-comic-panel-black-panther-detective-examines-paw-print",
+      "publishedAt": "2026-08-23T14:52:52.730Z"
+    },
+    {
       "slug": "img-20260604-wa0146",
       "title": "Img 20260604 Wa0146",
       "category": "Business Animals",
@@ -567,6 +592,11 @@
       "publicId": "inkprowl/e7f33028-5697-46df-84f3-a19599ce27be/img-20260604-wa0146",
       "resourceType": "image",
       "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787464771/inkprowl/e7f33028-5697-46df-84f3-a19599ce27be/img-20260604-wa0146.jpg"
+    },
+    "artwork:vintage-noir-comic-panel-black-panther-detective-examines-paw-print": {
+      "publicId": "inkprowl/916bd1fc-7f65-4877-9a74-453f6c13327b/vintage-noir-comic-panel-black-panther-detective-examines-paw-print",
+      "resourceType": "image",
+      "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787496772/inkprowl/916bd1fc-7f65-4877-9a74-453f6c13327b/vintage-noir-comic-panel-black-panther-detective-examines-paw-print.png"
     }
   }
 }
