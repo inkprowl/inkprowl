@@ -1,7 +1,8 @@
 import { ArrowDownRight, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
-import { useState } from "react";
+import { useState, type PointerEvent as ReactPointerEvent } from "react";
 import { Link } from "wouter";
 import { ArtworkVisual, AdSlot } from "@/components/ArtworkCard";
+import { FullscreenInspectionViewer } from "@/components/FullscreenInspectionViewer";
 import { CloudinaryVideoPlayer, PageFrame } from "@/components/InkprowlChrome";
 import { categories, publishedArtworks, siteBranding, siteMedia, sponsoredCampaign } from "@/data/catalog";
 import { sponsorDisplayName } from "@/lib/sponsorPresentation";
@@ -12,8 +13,13 @@ function HeroBanner({ src, fallback }: { src: string; fallback: React.ReactNode 
   return <img className="hero-banner" src={src} alt="INKPROWL hero banner" loading="eager" decoding="sync" fetchPriority="high" onError={() => setFailed(true)} />;
 }
 
+function HeroArtwork({ lead }: { lead: (typeof publishedArtworks)[number] | undefined }) {
+  return siteBranding.heroBannerUrl ? <HeroBanner src={siteBranding.heroBannerUrl} fallback={lead ? <ArtworkVisual artwork={lead} large /> : <div className="hero-empty-stage">New owner uploads will appear here.</div>} /> : lead ? <ArtworkVisual artwork={lead} large /> : <div className="hero-empty-stage">New owner uploads will appear here.</div>;
+}
+
 export default function Home() {
   const lead = publishedArtworks[0];
+  const [heroViewerOpen, setHeroViewerOpen] = useState(false);
   const latestArtworks = [...publishedArtworks].sort((left, right) => Date.parse(right.publishedAt ?? "") - Date.parse(left.publishedAt ?? "")).slice(0, 5);
   const trendingArtworks = publishedArtworks.filter((artwork) => !latestArtworks.some((latest) => latest.slug === artwork.slug)).slice(0, 4);
   const discoveryArtworks = latestArtworks.length ? latestArtworks : publishedArtworks.slice(0, 5);
@@ -24,6 +30,11 @@ export default function Home() {
   const sponsorName = sponsorDisplayName(sponsoredCampaign.clientName);
   const railVideoUrl = sponsoredCampaign.enabled && sponsoredCampaign.videoUrl ? sponsoredCampaign.videoUrl : stageVideoUrl;
   const railVideoTitle = sponsoredCampaign.enabled && sponsoredCampaign.videoUrl ? `${sponsorName} sponsored film` : stageVideoTitle;
+  const openHeroViewerOnTouch = (event: ReactPointerEvent<HTMLDivElement>) => {
+    if (event.pointerType !== "touch" || !window.matchMedia("(max-width: 760px)").matches) return;
+    event.preventDefault();
+    setHeroViewerOpen(true);
+  };
   return (
     <PageFrame dark>
       <section className="hero-panel retro-comic-hero comic-banner-hero">
@@ -34,8 +45,9 @@ export default function Home() {
           <p className="hero-deck">Vintage animal editions, case files, and curious characters for the INKPROWL archive.</p>
           <div className="hero-cta-row"><Link href="/gallery" className="button-dark">Start reading <ArrowRight size={16} /></Link><Link href="/categories" className="text-link">Browse cases <ArrowDownRight size={17} /></Link></div>
         </div>
-        <div className="hero-art-wrap"><div className="hero-stats"><span><ShieldCheck size={16} /> COLLECTIBLE EDITIONS</span><span>4K / 600 DPI</span></div><div className="hero-art-stage">{siteBranding.heroBannerUrl ? <HeroBanner src={siteBranding.heroBannerUrl} fallback={lead ? <ArtworkVisual artwork={lead} large /> : <div className="hero-empty-stage">New owner uploads will appear here.</div>} /> : lead ? <ArtworkVisual artwork={lead} large /> : <div className="hero-empty-stage">New owner uploads will appear here.</div>}</div><div className="hero-art-caption"><span>{siteBranding.heroFeaturedLabel || "01 — FEATURED EDITION"}</span><strong>{siteBranding.heroFeaturedTitle || lead?.title || "Fresh owner editions"}</strong></div></div>
+        <div className="hero-art-wrap hero-inspection-trigger" tabIndex={0} role="button" aria-label="Open the complete framed hero layout for full-screen inspection" onPointerDown={openHeroViewerOnTouch} onDoubleClick={() => setHeroViewerOpen(true)} onKeyDown={(event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); setHeroViewerOpen(true); } }}><div className="hero-stats"><span><ShieldCheck size={16} /> COLLECTIBLE EDITIONS</span><span>4K / 600 DPI</span></div><div className="hero-art-stage"><HeroArtwork lead={lead} /></div><div className="hero-art-caption"><span>{siteBranding.heroFeaturedLabel || "01 — FEATURED EDITION"}</span><strong>{siteBranding.heroFeaturedTitle || lead?.title || "Fresh owner editions"}</strong></div></div>
       </section>
+      <FullscreenInspectionViewer open={heroViewerOpen} onOpenChange={setHeroViewerOpen} title={siteBranding.heroFeaturedTitle || lead?.title || "INKPROWL featured edition"} description="Full-screen framed hero inspection"><div className="artwork-fullscreen-framed-layout hero-fullscreen-framed-layout"><div className="artwork-fullscreen-frame-heading"><span>INKPROWL · FEATURED EDITION</span><span>4K / 600 DPI</span></div><div className="artwork-fullscreen-framed-stage"><HeroArtwork lead={lead} /></div></div></FullscreenInspectionViewer>
       <AdSlot placement="native-banner" label="Native partner banner" />
       <section className="retro-market section-wrap">
         <div className="retro-catalogue">

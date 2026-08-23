@@ -75,22 +75,25 @@ describe("public media layout contracts", () => {
 
   it("uses touch-first pinch and drag controls with a full-screen viewer for complete individual-artwork inspection", () => {
     const detail = source("client/src/pages/ArtworkDetail.tsx");
+    const viewer = source("client/src/components/FullscreenInspectionViewer.tsx");
     const mediaCss = source("client/src/components/inkprowlMedia.css");
-    expect(detail).toContain("onPointerDown={handlePointerDown}");
-    expect(detail).toContain("onPointerMove={handlePointerMove}");
-    expect(detail).toContain("FullscreenArtworkViewer");
+    expect(detail).toContain("FullscreenInspectionViewer");
     expect(detail).toContain("Open full-screen artwork");
-    expect(detail).toContain("Pinch with two fingers to zoom");
     expect(detail).toContain('event.pointerType === "touch" && window.matchMedia("(max-width: 760px)").matches');
-    expect(detail).toContain("tap the artwork to inspect the complete edition full-screen");
+    expect(detail).toContain("tap to inspect the complete framed edition full-screen");
+    expect(detail).toContain("artwork-fullscreen-framed-layout");
     expect(detail).not.toContain("artwork-zoom-toolbar");
     expect(detail).not.toContain("ZoomIn");
+    expect(viewer).toContain("onPointerDown={handlePointerDown}");
+    expect(viewer).toContain("onPointerMove={handlePointerMove}");
+    expect(viewer).toContain("Pinch the complete framed layout");
     expect(mediaCss).toContain("touch-action: none");
     expect(mediaCss).toContain(".artwork-zoom-stage.is-zoomed");
     expect(mediaCss).toContain(".artwork-fullscreen-dialog");
     expect(mediaCss).toContain(".artwork-fullscreen-content .art-image");
     expect(mediaCss).toContain("object-fit: contain");
     expect(mediaCss).toContain(".artwork-fullscreen-dialog { padding-inline: 0 !important; }");
+    expect(mediaCss).toContain(".artwork-fullscreen-framed-layout");
   });
 
   it("keeps configured display banners dismissible in the header without reactivating Popunder code", () => {
@@ -177,7 +180,7 @@ describe("public media layout contracts", () => {
     expect(retroCss).toContain(".site-shell .menu-button{display:inline-flex!important;align-items:center");
   });
 
-  it("uses a larger teal, mustard, and rust comic masthead on desktop without changing the compact phone header", () => {
+  it("uses a larger teal, mustard, and rust comic masthead on desktop and a full green wordmark on phone", () => {
     const retroCss = source("client/src/retro-market.css");
     expect(retroCss).toContain("Desktop masthead: larger, inked display type");
     expect(retroCss).toContain(".site-shell .site-header{background:#f7e8c9;border-top:7px solid #2f5f5a");
@@ -185,8 +188,19 @@ describe("public media layout contracts", () => {
     expect(retroCss).toContain(".site-shell .brand-word{display:inline;color:#2f5f5a");
     expect(retroCss).toContain(".site-shell .main-nav a{padding:12px 16px");
     expect(retroCss).toContain(".site-shell .main-nav a.active,.site-shell .main-nav a:hover{color:#fff4d7;background:#2f5f5a");
-    expect(retroCss).toContain("@media(max-width:760px){.site-shell .header-inner{position:relative");
-    expect(retroCss).toContain(".site-shell .brand-seal{width:54px;height:54px");
-    expect(retroCss).toContain(".site-shell .brand-word{color:#2f5f5a;font-family:\"Bebas Neue\",\"Oswald\",sans-serif;font-size:20px");
+    expect(retroCss).toContain("@media(max-width:760px){.site-shell .header-inner{min-height:76px");
+    expect(retroCss).toContain(".site-shell .brand-seal{flex:0 0 auto;width:54px;height:54px");
+    expect(retroCss).toContain(".site-shell .brand-word{display:block!important;min-width:0;flex:1;color:#2f5f5a");
+    expect(retroCss).toContain("font-size:clamp(25px,8.25vw,34px)");
+  });
+
+  it("opens the complete green-framed hero layout in the same pinch-and-drag viewer on phone", () => {
+    const home = source("client/src/pages/Home.tsx");
+    const mediaCss = source("client/src/components/inkprowlMedia.css");
+    expect(home).toContain("hero-inspection-trigger");
+    expect(home).toContain("openHeroViewerOnTouch");
+    expect(home).toContain("FullscreenInspectionViewer open={heroViewerOpen}");
+    expect(home).toContain("hero-fullscreen-framed-layout");
+    expect(mediaCss).toContain(".artwork-fullscreen-framed-stage");
   });
 });

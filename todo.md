@@ -236,3 +236,4 @@
 - [x] Keep the approved mobile layout unchanged while moving the desktop sponsor video into a full-width landscape module directly below the visible ad area and above Fresh Issues.
 - [x] Enlarge and restyle the desktop logo, Home, and Gallery navigation with stronger vintage-comic typography and cream/teal/rust contrast while preserving the approved hero, video, player, and mobile layout.
 - [x] Enlarge the mobile masthead logo and ensure the individual artwork viewer opens and pinch-zooms across the full phone screen rather than inside the square inline artwork frame.
+- [x] Add a green, stylish INKPROWL masthead wordmark between the phone logo seal and menu control, and allow the complete framed hero/artwork composition—not only its inner image—to open into pinch-and-drag inspection on mobile.
