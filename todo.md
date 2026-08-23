@@ -214,3 +214,4 @@
 - [x] Add safe stale-release recovery so mobile browsers reload the current build instead of failing on a missing dynamically imported JavaScript file.
 - [x] Disable the site-wide Adsterra Popunder script so ordinary navigation clicks do not open unexpected advertising links; retain explicit non-Popunder placement controls for future ads.
 - [x] Add separate Admin code boxes and visible public placement controls for Adsterra Native Banner, Social Bar, and 300×250, 728×90, and 320×50 banner formats.
+- [ ] Preserve all owner-entered advertising code boxes and add one clear master Ads on/off switch that disables or restores every configured visible placement without erasing its saved code.

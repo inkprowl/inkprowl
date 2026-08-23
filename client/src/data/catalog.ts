@@ -48,6 +48,8 @@ export type SponsoredCampaign = {
 };
 
 export type AdvertisingSettings = {
+  /** Global owner switch. Turning it off hides all public placements without clearing provider code or placement choices. */
+  advertisingEnabled?: boolean;
   adsenseEnabled: boolean;
   adsterraEnabled: boolean;
   adsenseCode?: string;
@@ -144,6 +146,7 @@ export const sponsoredCampaign: SponsoredCampaign = {
 
 /** Static advertisement placements are only activated by the owner after the relevant provider code is approved. */
 export const advertisingSettings: AdvertisingSettings = {
+  advertisingEnabled: true,
   adsenseEnabled: false,
   adsterraEnabled: false,
   ...generatedCatalogue.advertisingSettings,
@@ -151,11 +154,13 @@ export const advertisingSettings: AdvertisingSettings = {
 };
 
 export const activeAdvertisementProviders = (settings: AdvertisingSettings = advertisingSettings) => [
-  settings.adsenseEnabled ? "Google AdSense" : undefined,
-  settings.adsterraEnabled ? "Adsterra" : undefined,
+  settings.advertisingEnabled !== false && settings.adsenseEnabled ? "Google AdSense" : undefined,
+  settings.advertisingEnabled !== false && settings.adsterraEnabled ? "Adsterra" : undefined,
 ].filter((provider): provider is string => Boolean(provider));
 
 export const isAdvertisementPlacementEnabled = (placement: AdvertisingPlacement, settings: AdvertisingSettings = advertisingSettings) => {
+  // The owner master switch hides every public placement while preserving the saved configuration.
+  if (settings.advertisingEnabled === false) return false;
   // Popunder networks hijack ordinary navigation gestures without providing a visible placement.
   // Preserve owner configuration data, but never execute those scripts in the public experience.
   if (placement === "popunder") return false;

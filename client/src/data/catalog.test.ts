@@ -101,6 +101,21 @@ describe("INKPROWL catalog", () => {
     }
   });
 
+  it("uses the owner master switch to hide every placement without erasing saved code or placement choices", () => {
+    const settings = {
+      advertisingEnabled: false,
+      adsenseEnabled: false,
+      adsterraEnabled: true,
+      placements: { "native-banner": true },
+      placementCodes: { "native-banner": { adsterra: '<script src="https://cdn.example.test/native.js"></script>' } },
+    };
+    expect(settings.placementCodes["native-banner"]?.adsterra).toContain("native.js");
+    expect(settings.placements["native-banner"]).toBe(true);
+    expect(isAdvertisementPlacementEnabled("native-banner", settings)).toBe(false);
+    expect(getAdvertisementProviderCodes("native-banner", settings)).toEqual([]);
+    expect(isAdvertisementPlacementEnabled("native-banner", { ...settings, advertisingEnabled: true })).toBe(true);
+  });
+
   it("rejects obvious Popunder code from every visible Adsterra placement", () => {
     expect(isSafeVisibleAdsterraCode('<script src="https://cdn.example.test/banner.js"></script>')).toBe(true);
     expect(isSafeVisibleAdsterraCode('<script src="https://profitableratecpmnetwork.com/format.js"></script>')).toBe(false);
