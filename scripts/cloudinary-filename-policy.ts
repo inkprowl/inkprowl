@@ -1,5 +1,6 @@
 export type IncomingAsset =
   | { kind: "artwork"; category: string; slug: string; title: string; tags: string[] }
+  | { kind: "gif"; slug: string; title: string; tags: string[] }
   | { kind: "soundtrack"; title: string }
   | { kind: "hero-film" }
   | { kind: "hero-banner" }
@@ -27,6 +28,7 @@ const categories = new Map([
 ]);
 
 const imageExtensions = new Set(["jpg", "jpeg", "png", "webp", "avif"]);
+const gifExtensions = new Set(["gif"]);
 const videoExtensions = new Set(["mp4", "webm", "mov"]);
 const audioExtensions = new Set(["mp3", "wav", "m4a", "ogg"]);
 
@@ -47,6 +49,13 @@ export function classifyIncomingFile(filename: string): IncomingAsset {
     if (!category || !slug) throw new Error(`Use art--<category>--<title>.<image extension>; received ${filename}`);
     const title = titleFromSlug(slug);
     return { kind: "artwork", category, slug, title, tags: slug.split("-").filter((part) => part.length > 2).slice(0, 6) };
+  }
+
+  if (stem.startsWith("gif--")) {
+    if (!gifExtensions.has(ext)) throw new Error(`GIF editions must use a GIF extension: ${filename}`);
+    const slug = slugify(stem.slice("gif--".length));
+    if (!slug) throw new Error(`Use gif--<title>.gif; received ${filename}`);
+    return { kind: "gif", slug, title: titleFromSlug(slug), tags: slug.split("-").filter((part) => part.length > 2).slice(0, 6) };
   }
 
   if (stem.startsWith("song--")) {

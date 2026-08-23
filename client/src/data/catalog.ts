@@ -1,6 +1,7 @@
 import generatedCatalogueJson from "./generated-catalog.json";
 
 export type DownloadFormat = "jpg" | "png" | "webp";
+export type GifDownloadFormat = "gif";
 
 export type Artwork = {
   slug: string;
@@ -16,6 +17,23 @@ export type Artwork = {
   orientation: "portrait" | "landscape" | "square";
   tags: string[];
   downloadFormats?: DownloadFormat[];
+  assetKey?: string;
+  publishedAt?: string;
+};
+
+export type Gif = {
+  slug: string;
+  title: string;
+  category: "GIFs";
+  description: string;
+  isPremium: boolean;
+  isPublished?: boolean;
+  accent: string;
+  imageUrl: string;
+  mediaType: "gif";
+  orientation: "portrait" | "landscape" | "square";
+  tags: string[];
+  downloadFormats?: GifDownloadFormat[];
   assetKey?: string;
   publishedAt?: string;
 };
@@ -82,6 +100,8 @@ type GeneratedCatalogue = {
   artworks: Artwork[];
   artworkOverrides?: Record<string, Partial<Pick<Artwork, "title" | "category" | "description" | "tags" | "isPublished">>>;
   artworkMedia: Record<string, Partial<Pick<Artwork, "audioUrl" | "videoUrl">>>;
+  gifs?: Gif[];
+  gifOverrides?: Record<string, Partial<Pick<Gif, "title" | "description" | "tags" | "isPublished">> & { metaTitle?: string; metaDescription?: string }>;
   siteMedia: Partial<SiteMedia>;
   siteBranding: Partial<SiteBranding>;
   sponsoredCampaign: Partial<SponsoredCampaign>;
@@ -215,6 +235,13 @@ export const getCloudinaryDownloadUrl = (imageUrl: string | undefined, slug: str
 };
 
 export const getArtworkShareUrl = (slug: string) => `https://inkprowl.github.io/inkprowl/art/${slug}/`;
+export const getGifShareUrl = (slug: string) => `https://inkprowl.github.io/inkprowl/gif/${slug}/`;
+
+/** The GIF download deliberately keeps the original animated asset; no format conversion is applied. */
+export const getCloudinaryGifDownloadUrl = (gifUrl: string | undefined, slug: string) => {
+  if (!gifUrl || !isCloudinaryDeliveryUrl(gifUrl) || !gifUrl.includes("/image/upload/")) return undefined;
+  return gifUrl.replace("/image/upload/", `/image/upload/fl_attachment:inkprowl-${slug}-gif/`);
+};
 
 function validateCloudinaryImageUrl(url: string | undefined, field: string) {
   if (url && (!isCloudinaryDeliveryUrl(url) || !url.includes("/image/upload/"))) {
@@ -264,6 +291,9 @@ export const categories = [...baseCategories, ...(generatedCatalogue.categories 
   .map((category) => ({ ...category, name: categoryAliases[category.name] ?? category.name }))
   .filter((category, index, all) => all.findIndex((candidate) => candidate.name === category.name) === index);
 
+/** GIFs remain an isolated media collection, but their category is always discoverable. */
+export const gifCategory: CategoryDefinition = { name: "GIFs", icon: "↻", count: (generatedCatalogue.gifs ?? []).filter((gif) => gif.isPublished !== false).length };
+
 /** The public gallery intentionally contains only owner-managed catalogue records. New uploads are inserted first by the sync worker. */
 export const artworks: Artwork[] = [
   ...generatedCatalogue.artworks.map((artwork) => ({ ...artwork, ...(generatedCatalogue.artworkOverrides?.[artwork.slug] ?? {}), ...(generatedCatalogue.artworkMedia[artwork.slug] ?? {}) })),
@@ -279,3 +309,9 @@ validateOwnerConfiguration();
 export const publishedArtworks = artworks.filter((artwork) => artwork.isPublished !== false);
 export const getArtwork = (slug: string) => publishedArtworks.find((artwork) => artwork.slug === slug);
 export const relatedArtworks = (artwork: Artwork) => publishedArtworks.filter((candidate) => candidate.slug !== artwork.slug && candidate.category === artwork.category).slice(0, 3);
+
+export const gifs: Gif[] = (generatedCatalogue.gifs ?? []).map((gif) => ({ ...gif, ...(generatedCatalogue.gifOverrides?.[gif.slug] ?? {}) }));
+gifs.forEach((gif) => validateArtworkMedia({ ...gif, downloadFormats: ["jpg"] }));
+export const publishedGifs = gifs.filter((gif) => gif.isPublished !== false);
+export const getGif = (slug: string) => publishedGifs.find((gif) => gif.slug === slug);
+export const relatedGifs = (gif: Gif) => publishedGifs.filter((candidate) => candidate.slug !== gif.slug).slice(0, 3);

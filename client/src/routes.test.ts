@@ -6,8 +6,10 @@ describe("INKPROWL GitHub Pages routes", () => {
     expect(INKPROWL_PATHS).toEqual([
       "/",
       "/gallery",
+      "/gifs",
       "/categories",
       "/art/:slug",
+      "/gif/:slug",
       "/about",
       "/contact",
       "/terms",
@@ -28,6 +30,8 @@ describe("INKPROWL GitHub Pages routes", () => {
     const source = await import("node:fs/promises").then((fs) => fs.readFile(new URL("./App.tsx", import.meta.url), "utf8"));
     expect(source).toContain('const Admin = lazy(() => import("./pages/Admin"))');
     expect(source).toContain('const ArtworkDetail = lazy(() => import("./pages/ArtworkDetail"))');
+    expect(source).toContain('const GifDetail = lazy(() => import("./pages/GifDetail"))');
+    expect(source).toContain('<Route path={"/gif/:slug"} component={GifDetail} />');
     expect(source).toContain('<Route path={"/"} component={Home} />');
   });
 });

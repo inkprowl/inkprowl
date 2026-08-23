@@ -55,7 +55,7 @@ const assetRecord = (result) => ({
 
 const queuePublicId = (file, asset) => {
   const queueId = path.basename(path.dirname(file));
-  const suffix = asset.kind === "artwork" || asset.kind === "edition-video" ? asset.slug : asset.kind;
+  const suffix = asset.kind === "artwork" || asset.kind === "gif" || asset.kind === "edition-video" ? asset.slug : asset.kind;
   return `inkprowl/${queueId}/${suffix}`;
 };
 
@@ -100,6 +100,8 @@ function applyUpload(catalogue, asset, result) {
   catalogue.artworks ??= [];
   catalogue.artworkOverrides ??= {};
   catalogue.artworkMedia ??= {};
+  catalogue.gifs ??= [];
+  catalogue.gifOverrides ??= {};
   catalogue.siteMedia ??= {};
   catalogue.siteBranding ??= {};
   catalogue.sponsoredCampaign ??= {};
@@ -121,6 +123,28 @@ function applyUpload(catalogue, asset, result) {
       orientation: "square",
       tags: asset.tags,
       downloadFormats: ["jpg", "png", "webp"],
+      assetKey,
+      publishedAt: new Date().toISOString(),
+    });
+    catalogue.assets[assetKey] = record;
+    return;
+  }
+
+  if (asset.kind === "gif") {
+    if (catalogue.gifs.some((gif) => gif.slug === asset.slug)) throw new Error(`A generated GIF already uses the slug ${asset.slug}. Choose a different filename or remove the old GIF first.`);
+    const assetKey = `gif:${asset.slug}`;
+    catalogue.gifs.unshift({
+      slug: asset.slug,
+      title: asset.title,
+      category: "GIFs",
+      description: `An animated INKPROWL GIF edition featuring ${asset.title}.`,
+      isPremium: false,
+      accent: "gold",
+      imageUrl: record.deliveryUrl,
+      mediaType: "gif",
+      orientation: "square",
+      tags: asset.tags,
+      downloadFormats: ["gif"],
       assetKey,
       publishedAt: new Date().toISOString(),
     });

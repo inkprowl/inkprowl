@@ -234,4 +234,22 @@ describe("public media layout contracts", () => {
     expect(mobileCss).toContain(".owner-edit-form textarea,.artwork-draft-card textarea{min-height:210px;max-width:100%;white-space:pre-wrap;overflow-wrap:anywhere;word-break:break-word;overflow-y:auto}");
     expect(mobileCss).toContain(".owner-publish-session small,.owner-launch-heading p,.owner-upload-card p,.owner-workspace-heading p,.owner-record-card p,.owner-delete-note,.meta-preview span{max-inline-size:100%;overflow-wrap:anywhere;word-break:normal}");
   });
+
+  it("keeps GIF upload, removal, public detail, and social-preview work isolated from artwork routes", () => {
+    const dashboard = source("client/src/components/OwnerLaunchDashboard.tsx");
+    const detail = source("client/src/pages/GifDetail.tsx");
+    const gallery = source("client/src/pages/GifGallery.tsx");
+    const generator = source("scripts/generate-share-pages.ts");
+    expect(dashboard).toContain('workspace === "gif"');
+    expect(dashboard).toContain("GIF BULK PERMANENT REMOVAL");
+    expect(dashboard).toContain("Save GIF details");
+    expect(detail).toContain("Download GIF");
+    expect(detail).toContain("facebook.com/sharer/sharer.php");
+    expect(detail).toContain("WhatsApp");
+    expect(detail).toContain('placement="native-banner"');
+    expect(detail).toContain("CloudinaryVideoPlayer");
+    expect(gallery).toContain("publishedGifs");
+    expect(generator).toContain("publishedGifs");
+    expect(generator).toContain('imageType: "image/gif"');
+  });
 });

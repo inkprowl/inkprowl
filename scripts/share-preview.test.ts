@@ -21,4 +21,19 @@ describe("static artwork share previews", () => {
     expect(html).not.toContain('http-equiv="refresh"');
     expect(html).toContain("window.setTimeout");
   });
+
+  it("identifies animated GIF previews while retaining the delayed redirect", () => {
+    const html = renderArtworkSharePage({
+      title: "Noir loop — INKPROWL animated GIF",
+      description: "An original animated GIF edition.",
+      imageUrl: "https://res.cloudinary.com/y1pc8ocl/image/upload/noir-loop.gif",
+      shareUrl: "https://inkprowl.github.io/inkprowl/gif/noir-loop/",
+      redirectUrl: "https://inkprowl.github.io/inkprowl/#/gif/noir-loop",
+      imageType: "image/gif",
+    });
+
+    expect(html).toContain('property="og:image:type" content="image/gif"');
+    expect(html).toContain("#/gif/noir-loop");
+    expect(html).not.toContain('http-equiv="refresh"');
+  });
 });

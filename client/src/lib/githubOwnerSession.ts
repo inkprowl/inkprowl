@@ -33,6 +33,8 @@ export type OwnerGeneratedCatalogue = {
   artworks: Array<Record<string, unknown>>;
   artworkOverrides: Record<string, Record<string, unknown>>;
   artworkMedia: Record<string, Record<string, unknown>>;
+  gifs: Array<Record<string, unknown>>;
+  gifOverrides: Record<string, Record<string, unknown>>;
   siteMedia: Record<string, unknown>;
   siteBranding: Record<string, unknown>;
   sponsoredCampaign: Record<string, unknown>;
@@ -203,6 +205,8 @@ export function emptyOwnerCatalogue(): OwnerGeneratedCatalogue {
     artworks: [],
     artworkOverrides: {},
     artworkMedia: {},
+    gifs: [],
+    gifOverrides: {},
     siteMedia: {},
     siteBranding: {},
     sponsoredCampaign: {},

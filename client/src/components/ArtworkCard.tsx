@@ -1,7 +1,7 @@
 import { Download } from "lucide-react";
 import { Link } from "wouter";
 import { useEffect, useRef, useState } from "react";
-import { advertisingPlacementLabels, advertisingSettings, getAdvertisementProviderCodes, isAdvertisementPlacementEnabled, isAdvertisementPlacementRenderableAtViewport, isAdsterraVisiblePlacement, type AdvertisingPlacement, type Artwork } from "@/data/catalog";
+import { advertisingPlacementLabels, advertisingSettings, getAdvertisementProviderCodes, isAdvertisementPlacementEnabled, isAdvertisementPlacementRenderableAtViewport, isAdsterraVisiblePlacement, type AdvertisingPlacement, type Artwork, type Gif } from "@/data/catalog";
 import "./publicAdvertising.css";
 
 export function ArtworkVisual({ artwork, large = false, onImageError }: { artwork: Artwork; large?: boolean; onImageError?: () => void }) {
@@ -27,6 +27,12 @@ export function ArtworkCard({ artwork, feature = false }: { artwork: Artwork; fe
       <div className="art-card-copy"><Link href={`/art/${artwork.slug}`} className="art-title">{artwork.title}</Link><div className="art-card-actions"><span>Free download</span><Download size={16} /></div></div>
     </article>
   );
+}
+
+export function GifCard({ gif }: { gif: Gif }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  if (imageFailed) return null;
+  return <article className="art-card gif-card"><Link href={`/gif/${gif.slug}`} className="art-card-image"><img src={gif.imageUrl} alt={gif.title} className="art-image" onError={() => setImageFailed(true)} /></Link><div className="art-card-copy"><Link href={`/gif/${gif.slug}`} className="art-title">{gif.title}</Link><div className="art-card-actions"><span>Original GIF</span><Download size={16} /></div></div></article>;
 }
 
 function ProviderCode({ provider, code, placement }: { provider: string; code: string; placement: AdvertisingPlacement }) {

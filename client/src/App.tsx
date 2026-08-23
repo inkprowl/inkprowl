@@ -10,8 +10,10 @@ import { FloatingPlayer } from "./components/InkprowlChrome";
 import { shouldShowFloatingPlayer } from "./lib/publicNavigation";
 
 const Gallery = lazy(() => import("./pages/Gallery"));
+const GifGallery = lazy(() => import("./pages/GifGallery"));
 const Categories = lazy(() => import("./pages/Categories"));
 const ArtworkDetail = lazy(() => import("./pages/ArtworkDetail"));
+const GifDetail = lazy(() => import("./pages/GifDetail"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Admin = lazy(() => import("./pages/Admin"));
@@ -19,7 +21,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Privacy = lazy(async () => ({ default: (await import("./pages/Legal")).Privacy }));
 const Terms = lazy(async () => ({ default: (await import("./pages/Legal")).Terms }));
 
-export const INKPROWL_PATHS = ["/", "/gallery", "/categories", "/art/:slug", "/about", "/contact", "/terms", "/privacy", "/admin", "/404"] as const;
+export const INKPROWL_PATHS = ["/", "/gallery", "/gifs", "/categories", "/art/:slug", "/gif/:slug", "/about", "/contact", "/terms", "/privacy", "/admin", "/404"] as const;
 
 function PersistentPublicPlayer() {
   const [location] = useHashLocation();
@@ -33,8 +35,10 @@ function Router() {
         <Switch>
           <Route path={"/"} component={Home} />
           <Route path={"/gallery"} component={Gallery} />
+          <Route path={"/gifs"} component={GifGallery} />
           <Route path={"/categories"} component={Categories} />
           <Route path={"/art/:slug"} component={ArtworkDetail} />
+          <Route path={"/gif/:slug"} component={GifDetail} />
           <Route path={"/about"} component={About} />
           <Route path={"/contact"} component={Contact} />
           <Route path={"/terms"} component={Terms} />

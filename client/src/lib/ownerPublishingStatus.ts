@@ -101,7 +101,7 @@ export const savingArtworkMetadataStatus = (): OwnerPublishStatus => ({
   message: "Saving filename-derived artwork title, description, tags, and metadata…",
 });
 
-export function queuedForCloudinaryStatus(total: number, role?: "soundtrack" | "sponsor-video" | "artwork" | "logo" | "hero-banner"): OwnerPublishStatus {
+export function queuedForCloudinaryStatus(total: number, role?: "soundtrack" | "sponsor-video" | "artwork" | "gif" | "logo" | "hero-banner"): OwnerPublishStatus {
   const videoNote = role === "sponsor-video"
     ? " Cloudinary is preparing the video now. It will appear on the site when publishing finishes—do not upload it again."
     : "";

@@ -14,6 +14,13 @@ export function removeCatalogueAssetState(catalogue: GeneratedCatalogueState, ke
     if (catalogue.artworkMedia) delete catalogue.artworkMedia[slug];
   }
 
+  if (key.startsWith("gif:")) {
+    const slug = key.slice("gif:".length);
+    catalogue.gifs = (catalogue.gifs ?? []).filter((gif: { assetKey?: string }) => gif.assetKey !== key);
+    const hiddenOverride = catalogue.gifOverrides?.[slug]?.isPublished === false;
+    if (catalogue.gifOverrides && !hiddenOverride) delete catalogue.gifOverrides[slug];
+  }
+
   if (key.startsWith("artworkVideo:")) {
     const slug = key.slice("artworkVideo:".length);
     const current = catalogue.artworkMedia?.[slug] ?? {};
