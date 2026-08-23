@@ -146,10 +146,13 @@ describe("public media layout contracts", () => {
     expect(css).toContain(".hero-art-wrap:before");
   });
 
-  it("uses a visible square sponsor film on desktop, a full-width video-only mobile module, and a truly floating desktop player", () => {
+  it("places a wide sponsor screening before Fresh Issues on desktop while preserving the full-width video-only mobile module and floating player", () => {
     const retroCss = source("client/src/retro-market.css");
-    expect(retroCss).toContain(".retro-video-module .cloudinary-video.retro-rail-video,.retro-video-module .cloudinary-video.retro-rail-video>.video-ratio-frame{aspect-ratio:1/1!important");
-    expect(retroCss).toContain(".retro-video-module .cloudinary-video.retro-rail-video video{aspect-ratio:1/1!important;object-fit:cover!important");
+    expect(retroCss).toContain("Desktop screening sits immediately below the visible ad area and before Fresh Issues");
+    expect(retroCss).toContain(".retro-market.section-wrap{grid-template-columns:1fr;gap:28px}");
+    expect(retroCss).toContain(".retro-media-rail{order:-1;display:block;width:min(100%,1040px)");
+    expect(retroCss).toContain(".retro-video-module .cloudinary-video.retro-rail-video,.retro-video-module .cloudinary-video.retro-rail-video>.video-ratio-frame{aspect-ratio:16/9!important");
+    expect(retroCss).toContain(".retro-video-module .cloudinary-video.retro-rail-video video{aspect-ratio:16/9!important;object-fit:cover!important");
     expect(retroCss).toContain(".retro-media-rail{display:block;width:100%}");
     expect(retroCss).toContain(".retro-tunes-module{display:none!important}");
     expect(retroCss).toContain("@media(max-width:1120px){.retro-market.section-wrap{grid-template-columns:1fr");
