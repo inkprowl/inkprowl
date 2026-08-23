@@ -229,3 +229,4 @@
 - [x] Redesign the public storefront as a media-first 1960s vintage comic-art marketplace: reduce competing copy, enlarge artwork displays, and add prominent latest uploads, trending artwork, and related-art discovery sections.
 - [x] Move the sponsor video above homepage discovery content, add previous/next and short skip controls to the soundtrack player, and deepen the public styling with coloured 1960s comic-print dimensional details.
 - [x] Make the floating music player draggable and add professional commercial-grade frame treatments for the public hero artwork and logo.
+- [x] Restyle the public desktop and mobile storefront around the supplied warm retro-comic reference: printed-paper palette, compact illustrated hero, horizontal latest artwork strip, colourful category tiles, and a desktop media rail that stacks on mobile.

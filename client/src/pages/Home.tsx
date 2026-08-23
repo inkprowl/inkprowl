@@ -1,7 +1,7 @@
 import { ArrowDownRight, ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { Link } from "wouter";
-import { ArtworkCard, ArtworkVisual, AdSlot } from "@/components/ArtworkCard";
+import { ArtworkVisual, AdSlot } from "@/components/ArtworkCard";
 import { CloudinaryVideoPlayer, PageFrame } from "@/components/InkprowlChrome";
 import { categories, publishedArtworks, siteBranding, siteMedia, sponsoredCampaign } from "@/data/catalog";
 import { sponsorDisplayName } from "@/lib/sponsorPresentation";
@@ -22,24 +22,32 @@ export default function Home() {
   const stageVideoUrl = siteMedia.heroFilmUrl ?? (sponsorFilmIsHeroFallback ? sponsoredCampaign.videoUrl : undefined);
   const stageVideoTitle = sponsorFilmIsHeroFallback ? `${sponsoredCampaign.clientName} sponsored film` : "INKPROWL studio reel";
   const sponsorName = sponsorDisplayName(sponsoredCampaign.clientName);
+  const railVideoUrl = sponsoredCampaign.enabled && sponsoredCampaign.videoUrl ? sponsoredCampaign.videoUrl : stageVideoUrl;
+  const railVideoTitle = sponsoredCampaign.enabled && sponsoredCampaign.videoUrl ? `${sponsorName} sponsored film` : stageVideoTitle;
   return (
     <PageFrame dark>
-      <section className="hero-panel">
+      <section className="hero-panel retro-comic-hero">
         <div className="hero-copy">
           <div className="eyebrow light"><Sparkles size={14} /> {siteBranding.heroKicker}</div>
           <h1>{siteBranding.heroTitle}</h1>
-          <p className="hero-deck">A collector’s archive of animal characters, printed in line, shadow, and 1960s comic drama.</p>
-          <div className="hero-cta-row"><Link href="/gallery" className="button-light">Enter the archive <ArrowRight size={16} /></Link><Link href="/categories" className="text-link-light">Browse departments <ArrowDownRight size={17} /></Link></div>
+          <p className="hero-deck">Vintage animal editions, case files, and curious characters for the INKPROWL archive.</p>
+          <div className="hero-cta-row"><Link href="/gallery" className="button-dark">Start reading <ArrowRight size={16} /></Link><Link href="/categories" className="text-link">Browse cases <ArrowDownRight size={17} /></Link></div>
         </div>
         <div className="hero-art-wrap"><div className="hero-stats"><span><ShieldCheck size={16} /> COLLECTIBLE EDITIONS</span><span>4K / 600 DPI</span></div><div className="hero-art-stage">{siteBranding.heroBannerUrl ? <HeroBanner src={siteBranding.heroBannerUrl} fallback={lead ? <ArtworkVisual artwork={lead} large /> : <div className="hero-empty-stage">New owner uploads will appear here.</div>} /> : lead ? <ArtworkVisual artwork={lead} large /> : <div className="hero-empty-stage">New owner uploads will appear here.</div>}</div><div className="hero-art-caption"><span>{siteBranding.heroFeaturedLabel || "01 — FEATURED EDITION"}</span><strong>{siteBranding.heroFeaturedTitle || lead?.title || "Fresh owner editions"}</strong></div></div>
       </section>
-      {stageVideoUrl && <section className="archive-screening archive-screening-prime section-wrap"><div className="archive-screening-head"><span className="eyebrow light">{sponsorFilmIsHeroFallback ? sponsoredCampaign.label : "ARCHIVE SCREENING"}</span><strong>{sponsorFilmIsHeroFallback ? sponsorName : "INKPROWL in motion"}</strong></div><CloudinaryVideoPlayer className="hero-video full-video-fit" src={stageVideoUrl} title={stageVideoTitle} clientUrl={sponsorFilmIsHeroFallback ? sponsoredCampaign.clientUrl : undefined} clientName={sponsorFilmIsHeroFallback ? sponsorName : undefined} /></section>}
-      {sponsoredCampaign.enabled && sponsoredCampaign.videoUrl && siteMedia.heroFilmUrl && <section className="archive-screening archive-screening-paper section-wrap"><div className="archive-screening-head"><span className="eyebrow">{sponsoredCampaign.label}</span><strong>{sponsorName}</strong></div><CloudinaryVideoPlayer className="sponsor-video full-video-fit" src={sponsoredCampaign.videoUrl} title={`${sponsorName} sponsored film`} clientUrl={sponsoredCampaign.clientUrl} clientName={sponsorName} /></section>}
       <AdSlot placement="native-banner" label="Native partner banner" />
-      <section className="section-wrap home-discovery latest-discovery"><div className="section-heading archive-section-heading"><div><span className="eyebrow">LATEST INTO THE ARCHIVE</span><h2>Fresh <em>off the press.</em></h2></div><Link href="/gallery" className="text-link">View all editions <ArrowRight size={16} /></Link></div><div className="latest-grid">{discoveryArtworks.map((artwork, index) => <ArtworkCard key={artwork.slug} artwork={artwork} feature={index === 0} />)}</div></section>
-      <section className="section-wrap trending-section"><div className="section-heading archive-section-heading inverse"><div><span className="eyebrow light">TRENDING NOW</span><h2>Characters on the <em>move.</em></h2></div><span className="archive-section-note">A rotating collector’s selection from the archive.</span></div><div className="trending-grid">{collectorPicks.map((artwork) => <ArtworkCard key={artwork.slug} artwork={artwork} />)}</div></section>
-      <section className="section-wrap categories-preview archive-categories"><div className="section-heading archive-section-heading"><div><span className="eyebrow">SHOP THE DEPARTMENTS</span><h2>Pick your <em>case file.</em></h2></div><Link href="/categories" className="text-link">All departments <ArrowRight size={16} /></Link></div><div className="category-strip">{categories.slice(0, 6).map((category, index) => <Link href={`/gallery?category=${encodeURIComponent(category.name)}`} key={category.name} className="category-poster"><span className="category-number">0{index + 1}</span><span className="category-icon">{category.icon}</span><strong>{category.name}</strong><small>{category.count} WORKS</small></Link>)}</div></section>
-      <section className="manifesto archive-manifesto"><span className="eyebrow light">THE INKPROWL PRINT HOUSE</span><h2>Line. Character. <em>Collectible mischief.</em></h2><Link href="/about" className="text-link-light">Read the house notes <ArrowRight size={16} /></Link></section>
+      <section className="retro-market section-wrap">
+        <div className="retro-catalogue">
+          <section className="retro-latest-module"><div className="retro-module-head"><div><span className="eyebrow">LATEST UPLOADS</span><h2>Fresh issues</h2></div><Link href="/gallery" className="retro-arrow-link">All editions <ArrowRight size={16} /></Link></div><div className="retro-latest-strip">{discoveryArtworks.map((artwork, index) => <Link key={artwork.slug} href={`/art/${artwork.slug}`} className="retro-cover"><span className="retro-cover-number">#{String(index + 1).padStart(2, "0")}</span><ArtworkVisual artwork={artwork} /><strong>{artwork.title}</strong></Link>)}</div></section>
+          <section className="retro-categories-module"><div className="retro-module-head"><div><span className="eyebrow">CATEGORIES</span><h2>Choose a case</h2></div><Link href="/categories" className="retro-arrow-link">View all <ArrowRight size={16} /></Link></div><div className="retro-category-tiles">{categories.slice(0, 6).map((category) => <Link href={`/gallery?category=${encodeURIComponent(category.name)}`} key={category.name} className="retro-category-tile"><span>{category.icon}</span><strong>{category.name}</strong></Link>)}</div></section>
+        </div>
+        <aside className="retro-media-rail">
+          <section className="retro-rail-module retro-video-module"><div className="retro-rail-label"><span>FEATURED VIDEO</span><i>REEL 01</i></div>{railVideoUrl ? <CloudinaryVideoPlayer className="retro-rail-video" src={railVideoUrl} title={railVideoTitle} clientUrl={sponsoredCampaign.enabled && sponsoredCampaign.videoUrl ? sponsoredCampaign.clientUrl : undefined} clientName={sponsoredCampaign.enabled && sponsoredCampaign.videoUrl ? sponsorName : undefined} /> : <div className="retro-video-placeholder"><span>▶</span><strong>Screening soon</strong></div>}</section>
+          <section className="retro-tunes-module"><div className="retro-rail-label"><span>COMIC TUNES</span><i>ON AIR</i></div><div className="retro-radio-face"><span className="retro-speaker" /><div><strong>{siteMedia.soundtrackTitle || "INKPROWL Radio"}</strong><small>{siteMedia.soundtrackArtist || "Use the floating player to listen"}</small></div><span className="retro-speaker" /></div><p>The draggable player stays with you while you browse.</p></section>
+        </aside>
+      </section>
+      <section className="retro-trending section-wrap"><div className="retro-module-head"><div><span className="eyebrow">TRENDING FILES</span><h2>Characters in demand</h2></div><Link href="/gallery" className="retro-arrow-link">Browse archive <ArrowRight size={16} /></Link></div><div className="retro-trending-strip">{collectorPicks.map((artwork) => <Link key={artwork.slug} href={`/art/${artwork.slug}`} className="retro-trending-card"><ArtworkVisual artwork={artwork} /><span>{artwork.category}</span><strong>{artwork.title}</strong></Link>)}</div></section>
+      <section className="manifesto archive-manifesto retro-manifesto"><span className="eyebrow light">THE INKPROWL PRINT HOUSE</span><h2>New stories. <em>Old ink.</em></h2><Link href="/about" className="text-link-light">Read the house notes <ArrowRight size={16} /></Link></section>
       <AdSlot placement="social-bar" label="Social partner placement" />
     </PageFrame>
   );

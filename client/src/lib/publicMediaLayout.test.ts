@@ -104,25 +104,34 @@ describe("public media layout contracts", () => {
     expect(catalogue).toContain('if (placement === "popunder") return false;');
   });
 
-  it("prioritizes large artwork and truthful discovery modules on the public storefront", () => {
+  it("prioritizes a compact retro-comic catalogue and truthful discovery modules on the public storefront", () => {
     const home = source("client/src/pages/Home.tsx");
     const css = source("client/src/index.css");
-    expect(home).toContain("LATEST INTO THE ARCHIVE");
-    expect(home).toContain("TRENDING NOW");
-    expect(home).toContain("SHOP THE DEPARTMENTS");
+    const retroCss = source("client/src/retro-market.css");
+    expect(home).toContain("retro-comic-hero");
+    expect(home).toContain("retro-market");
+    expect(home).toContain("retro-latest-strip");
+    expect(home).toContain("retro-category-tiles");
+    expect(home).toContain("retro-media-rail");
+    expect(home).toContain("retro-trending-strip");
     expect(home).toContain("latestArtworks");
     expect(home).toContain("collectorPicks");
-    expect(css).toContain(".latest-grid{display:grid");
-    expect(css).toContain(".trending-section{padding-top:70px");
-    expect(css).toContain(".archive-manifesto{padding:64px");
+    expect(css).toContain('@import "./retro-market.css";');
+    expect(retroCss).toContain(".retro-market{display:grid;grid-template-columns");
+    expect(retroCss).toContain(".retro-latest-strip{display:flex");
+    expect(retroCss).toContain(".retro-category-tiles{display:grid");
+    expect(retroCss).toContain(".retro-media-rail{display:grid");
+    expect(retroCss).toContain(".retro-market{display:flex;flex-direction:column");
     expect(css).toContain(".detail-grid{grid-template-columns:minmax(0,1.5fr)");
   });
 
-  it("places the sponsor screening before discovery and provides practical soundtrack navigation", () => {
+  it("places the video and music rail before trending discovery and provides practical soundtrack navigation", () => {
     const home = source("client/src/pages/Home.tsx");
     const chrome = source("client/src/components/InkprowlChrome.tsx");
     const css = source("client/src/index.css");
-    expect(home.indexOf("archive-screening-prime")).toBeLessThan(home.indexOf("LATEST INTO THE ARCHIVE"));
+    const retroCss = source("client/src/retro-market.css");
+    expect(home.indexOf("retro-comic-hero")).toBeLessThan(home.indexOf("retro-media-rail"));
+    expect(home.indexOf("retro-media-rail")).toBeLessThan(home.indexOf("retro-trending"));
     expect(chrome).toContain("Previous soundtrack or restart");
     expect(chrome).toContain("Rewind 15 seconds");
     expect(chrome).toContain("Forward 15 seconds");
@@ -131,7 +140,7 @@ describe("public media layout contracts", () => {
     expect(chrome).toContain("player-compact-transport");
     expect(chrome).toContain("player-drag-handle");
     expect(chrome).toContain("Move music player");
-    expect(css).toContain(".archive-screening-prime");
+    expect(retroCss).toContain(".retro-rail-video{display:block;width:100%;min-height:0;aspect-ratio:16/9");
     expect(css).toContain(".player-transport");
     expect(css).toContain(".player-compact-transport");
     expect(css).toContain(".hero-art-wrap:before");
