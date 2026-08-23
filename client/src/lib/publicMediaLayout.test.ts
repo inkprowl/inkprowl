@@ -145,4 +145,13 @@ describe("public media layout contracts", () => {
     expect(css).toContain(".player-compact-transport");
     expect(css).toContain(".hero-art-wrap:before");
   });
+
+  it("keeps the responsive sponsor film landscape, reserves a truly floating desktop player, and prevents category tiles from overflowing narrow screens", () => {
+    const retroCss = source("client/src/retro-market.css");
+    expect(retroCss).toContain(".retro-video-module .cloudinary-video.retro-rail-video{display:block!important;width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:16/9!important");
+    expect(retroCss).toContain("@media(max-width:1120px){.retro-market.section-wrap{grid-template-columns:1fr");
+    expect(retroCss).toContain(".retro-media-rail{grid-template-columns:minmax(0,1.45fr) minmax(220px,.85fr)");
+    expect(retroCss).toContain("@media(min-width:801px){.floating-player{position:fixed!important;right:26px!important;bottom:26px!important;z-index:80!important");
+    expect(retroCss).toContain("@media(max-width:760px){.retro-market.section-wrap{display:flex;flex-direction:column;gap:30px;padding:32px 14px 38px");
+  });
 });

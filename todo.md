@@ -230,3 +230,4 @@
 - [x] Move the sponsor video above homepage discovery content, add previous/next and short skip controls to the soundtrack player, and deepen the public styling with coloured 1960s comic-print dimensional details.
 - [x] Make the floating music player draggable and add professional commercial-grade frame treatments for the public hero artwork and logo.
 - [x] Restyle the public desktop and mobile storefront around the supplied warm retro-comic reference: printed-paper palette, compact illustrated hero, horizontal latest artwork strip, colourful category tiles, and a desktop media rail that stacks on mobile.
+- [x] Fix the reported storefront layout defects: keep the desktop sponsor video landscape and clear of the catalogue, restore the visibly floating draggable music player on desktop, and align the mobile category grid without clipped side space or excess category-name gaps.
