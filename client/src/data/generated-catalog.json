@@ -1,6 +1,28 @@
 {
   "artworks": [
     {
+      "slug": "img-20260604-wa0190",
+      "title": "Img 20260604 Wa0190",
+      "category": "Business Animals",
+      "description": "An INKPROWL business animals artwork featuring Img 20260604 Wa0190, created in a vintage editorial line-art style.",
+      "isPremium": false,
+      "accent": "gold",
+      "imageUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787464734/inkprowl/31009b9e-271a-495b-bbe6-cdac4f18b8bb/img-20260604-wa0190.jpg",
+      "orientation": "square",
+      "tags": [
+        "img",
+        "20260604",
+        "wa0190"
+      ],
+      "downloadFormats": [
+        "jpg",
+        "png",
+        "webp"
+      ],
+      "assetKey": "artwork:img-20260604-wa0190",
+      "publishedAt": "2026-08-23T05:58:54.597Z"
+    },
+    {
       "slug": "new-4",
       "title": "New 4",
       "category": "Business Animals",
@@ -970,6 +992,11 @@
       "publicId": "inkprowl/f68dd37d-c0b5-49bf-b2f5-04018b359327/new-4",
       "resourceType": "image",
       "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787426206/inkprowl/f68dd37d-c0b5-49bf-b2f5-04018b359327/new-4.jpg"
+    },
+    "artwork:img-20260604-wa0190": {
+      "publicId": "inkprowl/31009b9e-271a-495b-bbe6-cdac4f18b8bb/img-20260604-wa0190",
+      "resourceType": "image",
+      "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787464734/inkprowl/31009b9e-271a-495b-bbe6-cdac4f18b8bb/img-20260604-wa0190.jpg"
     }
   }
 }
