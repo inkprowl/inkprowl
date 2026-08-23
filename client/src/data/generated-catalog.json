@@ -602,9 +602,64 @@
       "publicId": "inkprowl/gif-samples-20260823/panther-neon-noir-loop",
       "resourceType": "image",
       "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787510706/inkprowl/gif-samples-20260823/panther-neon-noir-loop.gif"
+    },
+    "gif:bull-market-ticker-loop": {
+      "publicId": "inkprowl/gif-samples-20260823/bull-market-ticker-loop",
+      "resourceType": "image",
+      "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787510735/inkprowl/gif-samples-20260823/bull-market-ticker-loop.gif"
+    },
+    "gif:fox-after-hours-sign-loop": {
+      "publicId": "inkprowl/gif-samples-20260823/fox-after-hours-sign-loop",
+      "resourceType": "image",
+      "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787510736/inkprowl/gif-samples-20260823/fox-after-hours-sign-loop.gif"
     }
   },
   "gifs": [
+    {
+      "slug": "fox-after-hours-sign-loop",
+      "title": "Fox After Hours Sign Loop",
+      "category": "GIFs",
+      "description": "An animated INKPROWL GIF edition featuring Fox After Hours Sign Loop.",
+      "isPremium": false,
+      "accent": "gold",
+      "imageUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787510736/inkprowl/gif-samples-20260823/fox-after-hours-sign-loop.gif",
+      "mediaType": "gif",
+      "orientation": "square",
+      "tags": [
+        "fox",
+        "after",
+        "hours",
+        "sign",
+        "loop"
+      ],
+      "downloadFormats": [
+        "gif"
+      ],
+      "assetKey": "gif:fox-after-hours-sign-loop",
+      "publishedAt": "2026-08-23T18:46:01.898Z"
+    },
+    {
+      "slug": "bull-market-ticker-loop",
+      "title": "Bull Market Ticker Loop",
+      "category": "GIFs",
+      "description": "An animated INKPROWL GIF edition featuring Bull Market Ticker Loop.",
+      "isPremium": false,
+      "accent": "gold",
+      "imageUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787510735/inkprowl/gif-samples-20260823/bull-market-ticker-loop.gif",
+      "mediaType": "gif",
+      "orientation": "square",
+      "tags": [
+        "bull",
+        "market",
+        "ticker",
+        "loop"
+      ],
+      "downloadFormats": [
+        "gif"
+      ],
+      "assetKey": "gif:bull-market-ticker-loop",
+      "publishedAt": "2026-08-23T18:46:01.789Z"
+    },
     {
       "slug": "panther-neon-noir-loop",
       "title": "Panther Neon Noir Loop",
