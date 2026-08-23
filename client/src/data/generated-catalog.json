@@ -1007,7 +1007,7 @@
     "adsenseCode": "",
     "adsterraCode": "",
     "placements": {
-      "social-native": true,
+      "social-native": false,
       "native-banner": true,
       "social-bar": true,
       "rectangle-300x250": true,
