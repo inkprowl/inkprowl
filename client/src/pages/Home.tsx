@@ -26,10 +26,11 @@ export default function Home() {
   const railVideoTitle = sponsoredCampaign.enabled && sponsoredCampaign.videoUrl ? `${sponsorName} sponsored film` : stageVideoTitle;
   return (
     <PageFrame dark>
-      <section className="hero-panel retro-comic-hero">
+      <section className="hero-panel retro-comic-hero comic-banner-hero">
         <div className="hero-copy">
-          <div className="eyebrow light"><Sparkles size={14} /> {siteBranding.heroKicker}</div>
-          <h1>{siteBranding.heroTitle}</h1>
+          <div className="eyebrow light"><Sparkles size={14} /> {siteBranding.heroKicker || "INKPROWL ARCHIVES"}</div>
+          <h1><span>INKPROWL</span> Animal comics</h1>
+          <p className="hero-title-strip">{siteBranding.heroTitle}</p>
           <p className="hero-deck">Vintage animal editions, case files, and curious characters for the INKPROWL archive.</p>
           <div className="hero-cta-row"><Link href="/gallery" className="button-dark">Start reading <ArrowRight size={16} /></Link><Link href="/categories" className="text-link">Browse cases <ArrowDownRight size={17} /></Link></div>
         </div>

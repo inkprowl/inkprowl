@@ -154,4 +154,17 @@ describe("public media layout contracts", () => {
     expect(retroCss).toContain("@media(min-width:801px){.floating-player{position:fixed!important;right:26px!important;bottom:26px!important;z-index:80!important");
     expect(retroCss).toContain("@media(max-width:760px){.retro-market.section-wrap{display:flex;flex-direction:column;gap:30px;padding:32px 14px 38px");
   });
+
+  it("uses an illustrated edge-to-edge comic banner instead of a split blank hero and compacts discovery to the reference hierarchy", () => {
+    const home = source("client/src/pages/Home.tsx");
+    const retroCss = source("client/src/retro-market.css");
+    expect(home).toContain('retro-comic-hero comic-banner-hero');
+    expect(home).toContain("<span>INKPROWL</span> Animal comics");
+    expect(retroCss).toContain("section.retro-comic-hero.comic-banner-hero{display:block;isolation:isolate;min-height:390px");
+    expect(retroCss).toContain(".comic-banner-hero .hero-art-wrap{position:absolute;z-index:0;inset:0;width:100%");
+    expect(retroCss).toContain(".comic-banner-hero .hero-copy{position:relative;z-index:3;display:flex;min-height:390px");
+    expect(retroCss).toContain(".retro-category-tile{display:flex;min-height:58px;align-items:center");
+    expect(retroCss).toContain(".retro-media-rail{grid-template-columns:minmax(0,1.16fr) minmax(0,.84fr)");
+    expect(retroCss).toContain(".site-shell .menu-button{display:inline-flex!important;align-items:center");
+  });
 });
