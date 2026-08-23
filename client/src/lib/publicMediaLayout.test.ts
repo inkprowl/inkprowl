@@ -125,7 +125,7 @@ describe("public media layout contracts", () => {
     expect(css).toContain(".detail-grid{grid-template-columns:minmax(0,1.5fr)");
   });
 
-  it("places the video and music rail before trending discovery and provides practical soundtrack navigation", () => {
+  it("places the video rail before trending discovery and provides practical floating soundtrack navigation", () => {
     const home = source("client/src/pages/Home.tsx");
     const chrome = source("client/src/components/InkprowlChrome.tsx");
     const css = source("client/src/index.css");
@@ -140,31 +140,34 @@ describe("public media layout contracts", () => {
     expect(chrome).toContain("player-compact-transport");
     expect(chrome).toContain("player-drag-handle");
     expect(chrome).toContain("Move music player");
-    expect(retroCss).toContain(".retro-rail-video{display:block;width:100%;min-height:0;aspect-ratio:16/9");
+    expect(retroCss).toContain(".retro-video-module .cloudinary-video.retro-rail-video,.retro-video-module .cloudinary-video.retro-rail-video>.video-ratio-frame{aspect-ratio:1/1!important");
     expect(css).toContain(".player-transport");
     expect(css).toContain(".player-compact-transport");
     expect(css).toContain(".hero-art-wrap:before");
   });
 
-  it("keeps the responsive sponsor film landscape, reserves a truly floating desktop player, and prevents category tiles from overflowing narrow screens", () => {
+  it("uses a visible square sponsor film on desktop, a full-width video-only mobile module, and a truly floating desktop player", () => {
     const retroCss = source("client/src/retro-market.css");
-    expect(retroCss).toContain(".retro-video-module .cloudinary-video.retro-rail-video{display:block!important;width:100%!important;height:auto!important;min-height:0!important;aspect-ratio:16/9!important");
+    expect(retroCss).toContain(".retro-video-module .cloudinary-video.retro-rail-video,.retro-video-module .cloudinary-video.retro-rail-video>.video-ratio-frame{aspect-ratio:1/1!important");
+    expect(retroCss).toContain(".retro-video-module .cloudinary-video.retro-rail-video video{aspect-ratio:1/1!important;object-fit:cover!important");
+    expect(retroCss).toContain(".retro-media-rail{display:block;width:100%}");
+    expect(retroCss).toContain(".retro-tunes-module{display:none!important}");
     expect(retroCss).toContain("@media(max-width:1120px){.retro-market.section-wrap{grid-template-columns:1fr");
     expect(retroCss).toContain(".retro-media-rail{grid-template-columns:minmax(0,1.45fr) minmax(220px,.85fr)");
     expect(retroCss).toContain("@media(min-width:801px){.floating-player{position:fixed!important;right:26px!important;bottom:26px!important;z-index:80!important");
     expect(retroCss).toContain("@media(max-width:760px){.retro-market.section-wrap{display:flex;flex-direction:column;gap:30px;padding:32px 14px 38px");
   });
 
-  it("uses an illustrated edge-to-edge comic banner instead of a split blank hero and compacts discovery to the reference hierarchy", () => {
+  it("restores the unobstructed green-framed square hero while retaining compact comic discovery", () => {
     const home = source("client/src/pages/Home.tsx");
     const retroCss = source("client/src/retro-market.css");
     expect(home).toContain('retro-comic-hero comic-banner-hero');
     expect(home).toContain("<span>INKPROWL</span> Animal comics");
-    expect(retroCss).toContain("section.retro-comic-hero.comic-banner-hero{display:block;isolation:isolate;min-height:390px");
-    expect(retroCss).toContain(".comic-banner-hero .hero-art-wrap{position:absolute;z-index:0;inset:0;width:100%");
-    expect(retroCss).toContain(".comic-banner-hero .hero-copy{position:relative;z-index:3;display:flex;min-height:390px");
+    expect(retroCss).toContain("section.retro-comic-hero.comic-banner-hero{display:grid;grid-template-columns:1fr;place-items:center;min-height:0");
+    expect(retroCss).toContain(".comic-banner-hero .hero-copy{display:none}");
+    expect(retroCss).toContain(".comic-banner-hero .hero-art-wrap{position:relative;z-index:1;inset:auto;justify-self:center;width:min(100%,760px)");
+    expect(retroCss).toContain(".comic-banner-hero .hero-art-stage{position:relative;inset:auto;aspect-ratio:1/1");
     expect(retroCss).toContain(".retro-category-tile{display:flex;min-height:58px;align-items:center");
-    expect(retroCss).toContain(".retro-media-rail{grid-template-columns:minmax(0,1.16fr) minmax(0,.84fr)");
     expect(retroCss).toContain(".site-shell .menu-button{display:inline-flex!important;align-items:center");
   });
 });
