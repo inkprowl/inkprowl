@@ -143,6 +143,13 @@ describe("INKPROWL catalog", () => {
     expect(getAdvertisementProviderCodes("native-banner", settings)).toEqual([{ name: "Adsterra", code }]);
   });
 
+  it("keeps the owner’s existing social/native visible unit code eligible when the public ads master switch is on", () => {
+    const code = '<script async data-cfasync="false" src="https://pl30795920.profitableratecpmnetwork.com/c1f8260496fe21bbc3c50899238f0512/invoke.js"></script><div id="container-c1f8260496fe21bbc3c50899238f0512"></div>';
+    const settings = { advertisingEnabled: true, adsenseEnabled: false, adsterraEnabled: true, placements: { "social-native": true }, placementCodes: { "social-native": { adsterra: code } } };
+    expect(getAdvertisementProviderCodes("social-native", settings)).toEqual([{ name: "Adsterra", code }]);
+    expect(getAdvertisementProviderCodes("social-native", { ...settings, advertisingEnabled: false })).toEqual([]);
+  });
+
   it("creates Cloudinary attachment URLs for each approved free-download format", () => {
     const newest = publishedArtworks[0]!;
     expect(availableDownloadFormats(newest)).toEqual(["jpg", "png", "webp"]);
