@@ -315,3 +315,21 @@ gifs.forEach((gif) => validateArtworkMedia({ ...gif, downloadFormats: ["jpg"] })
 export const publishedGifs = gifs.filter((gif) => gif.isPublished !== false);
 export const getGif = (slug: string) => publishedGifs.find((gif) => gif.slug === slug);
 export const relatedGifs = (gif: Gif) => publishedGifs.filter((candidate) => candidate.slug !== gif.slug).slice(0, 3);
+
+/** Public homepage discovery intentionally combines media types without changing the artwork-only gallery contracts. */
+export type DiscoveryEdition =
+  | (Artwork & { editionType: "artwork" })
+  | (Gif & { editionType: "gif" });
+
+const discoveryTimestamp = (edition: Artwork | Gif) => {
+  const timestamp = Date.parse(edition.publishedAt ?? "");
+  return Number.isFinite(timestamp) ? timestamp : 0;
+};
+
+export const publishedEditions: DiscoveryEdition[] = [
+  ...publishedArtworks.map((artwork) => ({ ...artwork, editionType: "artwork" as const })),
+  ...publishedGifs.map((gif) => ({ ...gif, editionType: "gif" as const })),
+].sort((left, right) => discoveryTimestamp(right) - discoveryTimestamp(left));
+
+export const freshEditions = publishedEditions.slice(0, 5);
+export const trendingEditions = publishedEditions.filter((edition) => !freshEditions.some((fresh) => fresh.editionType === edition.editionType && fresh.slug === edition.slug)).slice(0, 4);

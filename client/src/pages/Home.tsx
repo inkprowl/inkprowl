@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "wouter";
 import { ArtworkVisual, AdSlot } from "@/components/ArtworkCard";
 import { CloudinaryVideoPlayer, PageFrame } from "@/components/InkprowlChrome";
-import { categories, publishedArtworks, siteBranding, siteMedia, sponsoredCampaign } from "@/data/catalog";
+import { categories, freshEditions, publishedArtworks, siteBranding, siteMedia, sponsoredCampaign, trendingEditions, type DiscoveryEdition } from "@/data/catalog";
 import { sponsorDisplayName } from "@/lib/sponsorPresentation";
 
 function HeroBanner({ src, fallback }: { src: string; fallback: React.ReactNode }) {
@@ -16,12 +16,18 @@ function HeroArtwork({ lead }: { lead: (typeof publishedArtworks)[number] | unde
   return siteBranding.heroBannerUrl ? <HeroBanner src={siteBranding.heroBannerUrl} fallback={lead ? <ArtworkVisual artwork={lead} large /> : <div className="hero-empty-stage">New owner uploads will appear here.</div>} /> : lead ? <ArtworkVisual artwork={lead} large /> : <div className="hero-empty-stage">New owner uploads will appear here.</div>;
 }
 
+function DiscoveryVisual({ edition }: { edition: DiscoveryEdition }) {
+  return edition.editionType === "gif" ? <img src={edition.imageUrl} alt={edition.title} className="art-image" /> : <ArtworkVisual artwork={edition} />;
+}
+
+function discoveryHref(edition: DiscoveryEdition) {
+  return edition.editionType === "gif" ? `/gif/${edition.slug}` : `/art/${edition.slug}`;
+}
+
 export default function Home() {
   const lead = publishedArtworks[0];
-  const latestArtworks = [...publishedArtworks].sort((left, right) => Date.parse(right.publishedAt ?? "") - Date.parse(left.publishedAt ?? "")).slice(0, 5);
-  const trendingArtworks = publishedArtworks.filter((artwork) => !latestArtworks.some((latest) => latest.slug === artwork.slug)).slice(0, 4);
-  const discoveryArtworks = latestArtworks.length ? latestArtworks : publishedArtworks.slice(0, 5);
-  const collectorPicks = trendingArtworks.length ? trendingArtworks : discoveryArtworks.slice(0, 4);
+  const discoveryEditions = freshEditions.length ? freshEditions : publishedArtworks.slice(0, 5).map((artwork) => ({ ...artwork, editionType: "artwork" as const }));
+  const collectorPicks = trendingEditions.length ? trendingEditions : discoveryEditions.slice(0, 4);
   const sponsorFilmIsHeroFallback = !siteMedia.heroFilmUrl && sponsoredCampaign.enabled && Boolean(sponsoredCampaign.videoUrl);
   const stageVideoUrl = siteMedia.heroFilmUrl ?? (sponsorFilmIsHeroFallback ? sponsoredCampaign.videoUrl : undefined);
   const stageVideoTitle = sponsorFilmIsHeroFallback ? `${sponsoredCampaign.clientName} sponsored film` : "INKPROWL studio reel";
@@ -43,7 +49,7 @@ export default function Home() {
       <AdSlot placement="native-banner" label="Native partner banner" />
       <section className="retro-market section-wrap">
         <div className="retro-catalogue">
-          <section className="retro-latest-module"><div className="retro-module-head"><div><span className="eyebrow">LATEST UPLOADS</span><h2>Fresh issues</h2></div><Link href="/gallery" className="retro-arrow-link">All editions <ArrowRight size={16} /></Link></div><div className="retro-latest-strip">{discoveryArtworks.map((artwork, index) => <Link key={artwork.slug} href={`/art/${artwork.slug}`} className="retro-cover"><span className="retro-cover-number">#{String(index + 1).padStart(2, "0")}</span><ArtworkVisual artwork={artwork} /><strong>{artwork.title}</strong></Link>)}</div></section>
+          <section className="retro-latest-module"><div className="retro-module-head"><div><span className="eyebrow">LATEST UPLOADS</span><h2>Fresh issues</h2></div><Link href="/gallery" className="retro-arrow-link">All editions <ArrowRight size={16} /></Link></div><div className="retro-latest-strip">{discoveryEditions.map((edition, index) => <Link key={`${edition.editionType}:${edition.slug}`} href={discoveryHref(edition)} className="retro-cover"><span className="retro-cover-number">#{String(index + 1).padStart(2, "0")}</span><DiscoveryVisual edition={edition} /><small className="retro-media-type">{edition.editionType === "gif" ? "GIF LOOP" : "ART EDITION"}</small><strong>{edition.title}</strong></Link>)}</div></section>
           <section className="retro-categories-module"><div className="retro-module-head"><div><span className="eyebrow">CATEGORIES</span><h2>Choose a case</h2></div><Link href="/categories" className="retro-arrow-link">View all <ArrowRight size={16} /></Link></div><div className="retro-category-tiles">{categories.slice(0, 6).map((category) => <Link href={`/gallery?category=${encodeURIComponent(category.name)}`} key={category.name} className="retro-category-tile"><span>{category.icon}</span><strong>{category.name}</strong></Link>)}</div></section>
         </div>
         <aside className="retro-media-rail">
@@ -51,7 +57,7 @@ export default function Home() {
           <section className="retro-tunes-module"><div className="retro-rail-label"><span>COMIC TUNES</span><i>ON AIR</i></div><div className="retro-radio-face"><span className="retro-speaker" /><div><strong>{siteMedia.soundtrackTitle || "INKPROWL Radio"}</strong><small>{siteMedia.soundtrackArtist || "Use the floating player to listen"}</small></div><span className="retro-speaker" /></div><p>The draggable player stays with you while you browse.</p></section>
         </aside>
       </section>
-      <section className="retro-trending section-wrap"><div className="retro-module-head"><div><span className="eyebrow">TRENDING FILES</span><h2>Characters in demand</h2></div><Link href="/gallery" className="retro-arrow-link">Browse archive <ArrowRight size={16} /></Link></div><div className="retro-trending-strip">{collectorPicks.map((artwork) => <Link key={artwork.slug} href={`/art/${artwork.slug}`} className="retro-trending-card"><ArtworkVisual artwork={artwork} /><span>{artwork.category}</span><strong>{artwork.title}</strong></Link>)}</div></section>
+      <section className="retro-trending section-wrap"><div className="retro-module-head"><div><span className="eyebrow">TRENDING FILES</span><h2>Characters in demand</h2></div><Link href="/gallery" className="retro-arrow-link">Browse archive <ArrowRight size={16} /></Link></div><div className="retro-trending-strip">{collectorPicks.map((edition) => <Link key={`${edition.editionType}:${edition.slug}`} href={discoveryHref(edition)} className="retro-trending-card"><DiscoveryVisual edition={edition} /><span>{edition.editionType === "gif" ? "GIF LOOP" : edition.category}</span><strong>{edition.title}</strong></Link>)}</div></section>
       <section className="manifesto archive-manifesto retro-manifesto"><span className="eyebrow light">THE INKPROWL PRINT HOUSE</span><h2>New stories. <em>Old ink.</em></h2><Link href="/about" className="text-link-light">Read the house notes <ArrowRight size={16} /></Link></section>
       <AdSlot placement="social-bar" label="Social partner placement" />
     </PageFrame>

@@ -125,7 +125,9 @@ describe("public media layout contracts", () => {
     expect(home).toContain("retro-category-tiles");
     expect(home).toContain("retro-media-rail");
     expect(home).toContain("retro-trending-strip");
-    expect(home).toContain("latestArtworks");
+    expect(home).toContain("freshEditions");
+    expect(home).toContain("trendingEditions");
+    expect(home).toContain("GIF LOOP");
     expect(home).toContain("collectorPicks");
     expect(css).toContain('@import "./retro-market.css";');
     expect(retroCss).toContain(".retro-market{display:grid;grid-template-columns");

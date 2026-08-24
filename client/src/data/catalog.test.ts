@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { activeAdvertisementProviders, adsterraVisiblePlacements, advertisingPlacements, advertisingSettings, artworks, availableDownloadFormats, categories, getAdvertisementProviderCodes, getArtwork, getArtworkShareUrl, getCloudinaryDownloadUrl, getCloudinaryGifDownloadUrl, getGifShareUrl, gifCategory, isAdvertisementPlacementEnabled, isAdvertisementPlacementRenderableAtViewport, isApprovedClientDestination, isCloudinaryDeliveryUrl, isSafeVisibleAdsterraCode, publishedArtworks, publishedGifs, relatedArtworks, siteBranding, siteMedia, sponsoredCampaign, validateArtworkMedia, validateOwnerConfiguration, validateSiteMedia } from "./catalog";
+import { activeAdvertisementProviders, adsterraVisiblePlacements, advertisingPlacements, advertisingSettings, artworks, availableDownloadFormats, categories, freshEditions, getAdvertisementProviderCodes, getArtwork, getArtworkShareUrl, getCloudinaryDownloadUrl, getCloudinaryGifDownloadUrl, getGifShareUrl, gifCategory, isAdvertisementPlacementEnabled, isAdvertisementPlacementRenderableAtViewport, isApprovedClientDestination, isCloudinaryDeliveryUrl, isSafeVisibleAdsterraCode, publishedArtworks, publishedEditions, publishedGifs, relatedArtworks, siteBranding, siteMedia, sponsoredCampaign, trendingEditions, validateArtworkMedia, validateOwnerConfiguration, validateSiteMedia } from "./catalog";
 
 describe("INKPROWL catalog", () => {
   it("contains all requested public browsing categories while honouring the owner-approved category rename", () => {
@@ -180,6 +180,13 @@ describe("INKPROWL catalog", () => {
     expect(getGifShareUrl("panther-loop")).toBe("https://inkprowl.github.io/inkprowl/gif/panther-loop/");
     expect(getCloudinaryGifDownloadUrl(gifUrl, "panther-loop")).toBe("https://res.cloudinary.com/inkprowl/image/upload/fl_attachment:inkprowl-panther-loop-gif/v1/gif--panther-loop.gif");
     expect(getCloudinaryGifDownloadUrl("https://example.com/panther-loop.gif", "panther-loop")).toBeUndefined();
+  });
+
+  it("combines published artwork and GIF editions only for Fresh Uploads and Trending discovery", () => {
+    expect(publishedArtworks.every((edition) => !("editionType" in edition))).toBe(true);
+    expect(publishedEditions.every((edition) => edition.editionType === "artwork" || edition.editionType === "gif")).toBe(true);
+    expect(freshEditions).toEqual(publishedEditions.slice(0, 5));
+    expect(trendingEditions.every((edition) => !freshEditions.some((fresh) => fresh.editionType === edition.editionType && fresh.slug === edition.slug))).toBe(true);
   });
 
   it("accepts only HTTPS destinations for sponsored client visit controls", () => {

@@ -242,6 +242,8 @@
 - [x] Restyle the Admin login and management interface to match the latest INKPROWL storefront with a large logo/wordmark, paper-and-ink palette, vintage-comic framing, responsive layouts, and unchanged working controls.
 - [x] Refine Admin phone typography and alignment so headings and helper text do not overflow, and ensure 30–50 word artwork descriptions wrap and remain fully readable without horizontal scrolling.
 - [ ] Add a secure PayPal US$1.99 monthly membership checkout, server-side subscription verification, and member-only unlimited personal-download access without exposing payment credentials.
-- [ ] Add an isolated GIF category and dedicated Admin GIF workspace with bulk GIF upload, manual title/description/meta-tag editing, and confirmation-gated bulk deletion, without changing existing media workflows.
-- [ ] Add public individual GIF pages with GIF download, Facebook and WhatsApp sharing, Home navigation, related artwork/GIF recommendations, and the existing sponsor-video and visible-ad placements.
-- [ ] Create and publish three original Cloudinary-backed GIF sample editions through the new workflow for testing GIF downloads and social-sharing previews.
+- [x] Add an isolated GIF category and dedicated Admin GIF workspace with bulk GIF upload, manual title/description/meta-tag editing, and confirmation-gated bulk deletion, without changing existing media workflows.
+- [x] Add public individual GIF pages with GIF download, Facebook and WhatsApp sharing, Home navigation, related artwork/GIF recommendations, and the existing sponsor-video and visible-ad placements.
+- [x] Create and publish three original Cloudinary-backed GIF sample editions through the new workflow for testing GIF downloads and social-sharing previews.
+- [ ] Replace the static-feeling GIF samples with clear five-second roast-and-tease facial-expression animation loops while preserving Cloudinary-only permanent media delivery.
+- [ ] Show both artwork and GIF editions together in the public Fresh Uploads and Trending discovery sections without merging the dedicated GIF archive into the normal artwork gallery.
