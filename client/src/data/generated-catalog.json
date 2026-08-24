@@ -612,9 +612,36 @@
       "publicId": "inkprowl/gif-samples-20260823/fox-after-hours-sign-loop",
       "resourceType": "image",
       "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787510736/inkprowl/gif-samples-20260823/fox-after-hours-sign-loop.gif"
+    },
+    "gif:panther-roast-tease-loop": {
+      "publicId": "inkprowl/gif-expression-20260824/panther-roast-tease-loop",
+      "resourceType": "image",
+      "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787573902/inkprowl/gif-expression-20260824/panther-roast-tease-loop.gif"
     }
   },
   "gifs": [
+    {
+      "slug": "panther-roast-tease-loop",
+      "title": "Panther Roast Tease Loop",
+      "category": "GIFs",
+      "description": "An animated INKPROWL GIF edition featuring Panther Roast Tease Loop.",
+      "isPremium": false,
+      "accent": "gold",
+      "imageUrl": "https://res.cloudinary.com/y1pc8ocl/image/upload/v1787573902/inkprowl/gif-expression-20260824/panther-roast-tease-loop.gif",
+      "mediaType": "gif",
+      "orientation": "square",
+      "tags": [
+        "panther",
+        "roast",
+        "tease",
+        "loop"
+      ],
+      "downloadFormats": [
+        "gif"
+      ],
+      "assetKey": "gif:panther-roast-tease-loop",
+      "publishedAt": "2026-08-24T12:18:23.108Z"
+    },
     {
       "slug": "fox-after-hours-sign-loop",
       "title": "Fox After Hours Sign Loop",
