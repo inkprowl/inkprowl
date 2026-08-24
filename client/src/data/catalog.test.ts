@@ -170,6 +170,7 @@ describe("INKPROWL catalog", () => {
 
   it("uses direct static edition URLs for social previews and validates owner media settings", () => {
     expect(getArtworkShareUrl(publishedArtworks[0]!.slug)).toBe(`https://inkprowl.github.io/inkprowl/art/${publishedArtworks[0]!.slug}/`);
+    expect(getArtworkShareUrl("panther-detective", "2026-08-24T00:00:00.000Z")).toBe("https://inkprowl.github.io/inkprowl/art/panther-detective/?v=2026-08-24T00%3A00%3A00.000Z");
     expect(() => validateOwnerConfiguration()).not.toThrow();
   });
 

@@ -4,13 +4,23 @@ export type ArtworkSharePreview = {
   imageUrl: string;
   shareUrl: string;
   redirectUrl: string;
-  imageType?: "image/gif";
+  imageType?: "image/gif" | "image/jpeg";
 };
 
 const escapeHtml = (value: string) => value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 
 /** Social crawlers reject whitespace-broken attribute URLs even though browsers often recover them. */
 export const normalizePreviewImageUrl = (value: string | undefined) => (value ?? "").replace(/\s+/g, "");
+
+/**
+ * Give social crawlers a compact, universally decodable 1200 × 630 JPEG while preserving
+ * the complete edition inside the padded frame. Original downloads stay untouched.
+ */
+export const getCloudinaryArtworkPreviewUrl = (value: string | undefined) => {
+  const imageUrl = normalizePreviewImageUrl(value);
+  if (!/^https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\//.test(imageUrl)) return imageUrl;
+  return imageUrl.replace("/image/upload/", "/image/upload/f_jpg,q_auto:good,c_pad,w_1200,h_630,b_rgb:f7edd7/");
+};
 
 export const renderArtworkSharePage = ({ title, description, imageUrl, shareUrl, redirectUrl, imageType }: ArtworkSharePreview) => {
   const safeTitle = escapeHtml(title);

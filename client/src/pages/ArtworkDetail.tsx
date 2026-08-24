@@ -81,7 +81,7 @@ export default function ArtworkDetail() {
 
   const related = relatedArtworks(artwork);
   const downloadLinks = availableDownloadFormats(artwork).map((format) => ({ format, url: getCloudinaryDownloadUrl(artwork.imageUrl, artwork.slug, format) })).filter((item): item is { format: "jpg" | "png" | "webp"; url: string } => Boolean(item.url));
-  const shareUrl = getArtworkShareUrl(artwork.slug);
+  const shareUrl = getArtworkShareUrl(artwork.slug, artwork.publishedAt);
   const shareText = `${artwork.title} — INKPROWL`;
   const copyShareUrl = async () => {
     try {
@@ -109,7 +109,7 @@ export default function ArtworkDetail() {
           <h1>{artwork.title}</h1><p>{artwork.description}</p><div className="detail-divider" />
           <dl><div><dt>FORMAT</dt><dd>High-resolution digital edition</dd></div><div><dt>STYLE</dt><dd>Vintage line art / cross-hatching</dd></div><div><dt>DELIVERY</dt><dd>Free digital download</dd></div></dl>
           {downloadLinks.length ? <div className="download-panel"><span className="eyebrow">FREE HIGH-RESOLUTION DOWNLOADS</span><p className="download-panel-copy">Choose the file format you need and download the edition in the quality that suits your project.</p><div className="download-actions" aria-label="Artwork download formats">{downloadLinks.map(({ format, url }) => <a className="button-outline" key={format} href={url} download={`inkprowl-${artwork.slug}.${format}`} aria-label={`Download ${artwork.title} as ${format.toUpperCase()}`}><Download size={17} /> Download {format === "jpg" ? "JPEG" : format.toUpperCase()}</a>)}</div></div> : <button className="button-outline wide" onClick={() => setShareStatus("This edition is being prepared.")}><Download size={17} /> Download preparing</button>}
-          <div className="share-cluster"><button type="button" className="share-button" onClick={nativeShare}><Share2 size={15} /> Share this edition</button><a href={`https://wa.me/?text=${encodedText}%20${encodedUrl}`} target="_blank" rel="noreferrer">WhatsApp</a><a href={`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`} target="_blank" rel="noreferrer">X</a><button type="button" onClick={copyShareUrl}>Copy link</button></div>
+          <div className="share-cluster"><button type="button" className="share-button" onClick={nativeShare}><Share2 size={15} /> Share this edition</button><a href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`} target="_blank" rel="noreferrer">Facebook</a><a href={`https://wa.me/?text=${encodedText}%20${encodedUrl}`} target="_blank" rel="noreferrer">WhatsApp</a><a href={`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`} target="_blank" rel="noreferrer">X</a><button type="button" onClick={copyShareUrl}>Copy link</button></div>
           {shareStatus && <span className="detail-action-status" role="status">{shareStatus}</span>}
           <small className="detail-note">Shared edition links open a dedicated preview page with the artwork image, title, and description before landing in the INKPROWL archive.</small>
         </div>

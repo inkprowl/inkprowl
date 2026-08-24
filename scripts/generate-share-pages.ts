@@ -2,7 +2,7 @@ import fs from "node:fs";
 import fs from "node:fs";
 import path from "node:path";
 import { getArtworkShareUrl, getGifShareUrl, publishedArtworks, publishedGifs, siteBranding } from "../client/src/data/catalog";
-import { normalizePreviewImageUrl, renderArtworkSharePage } from "./share-preview";
+import { getCloudinaryArtworkPreviewUrl, normalizePreviewImageUrl, renderArtworkSharePage } from "./share-preview";
 
 const projectRoot = path.resolve(import.meta.dirname, "..");
 const outputRoot = path.join(projectRoot, "client", "public", "art");
@@ -13,14 +13,14 @@ fs.rmSync(outputRoot, { recursive: true, force: true });
 fs.rmSync(gifOutputRoot, { recursive: true, force: true });
 
 for (const artwork of publishedArtworks) {
-  const shareUrl = getArtworkShareUrl(artwork.slug);
-  const imageUrl = normalizePreviewImageUrl(artwork.imageUrl) || normalizePreviewImageUrl(siteBranding.heroBannerUrl) || fallbackPreview;
+  const shareUrl = getArtworkShareUrl(artwork.slug, artwork.publishedAt);
+  const imageUrl = getCloudinaryArtworkPreviewUrl(artwork.imageUrl) || getCloudinaryArtworkPreviewUrl(siteBranding.heroBannerUrl) || getCloudinaryArtworkPreviewUrl(fallbackPreview);
   const title = `${artwork.title} — INKPROWL`;
   const description = `${artwork.description} Browse and download this free INKPROWL edition.`;
   const redirectUrl = `https://inkprowl.github.io/inkprowl/#/art/${artwork.slug}`;
   const destination = path.join(outputRoot, artwork.slug);
   fs.mkdirSync(destination, { recursive: true });
-  fs.writeFileSync(path.join(destination, "index.html"), renderArtworkSharePage({ title, description, imageUrl, shareUrl, redirectUrl }), "utf8");
+  fs.writeFileSync(path.join(destination, "index.html"), renderArtworkSharePage({ title, description, imageUrl, shareUrl, redirectUrl, imageType: "image/jpeg" }), "utf8");
 }
 
 for (const gif of publishedGifs) {

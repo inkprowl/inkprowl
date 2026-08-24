@@ -246,4 +246,5 @@
 - [x] Add public individual GIF pages with GIF download, Facebook and WhatsApp sharing, Home navigation, related artwork/GIF recommendations, and the existing sponsor-video and visible-ad placements.
 - [x] Create and publish three original Cloudinary-backed GIF sample editions through the new workflow for testing GIF downloads and social-sharing previews.
 - [ ] Replace the static-feeling GIF samples with clear five-second roast-and-tease facial-expression animation loops while preserving Cloudinary-only permanent media delivery.
-- [ ] Show both artwork and GIF editions together in the public Fresh Uploads and Trending discovery sections without merging the dedicated GIF archive into the normal artwork gallery.
+- [x] Show both artwork and GIF editions together in the public Fresh Uploads and Trending discovery sections without merging the dedicated GIF archive into the normal artwork gallery.
+- [ ] Repair and validate crawler-visible social image previews for the Panther Detective artwork and all future Cloudinary-backed artwork uploads.

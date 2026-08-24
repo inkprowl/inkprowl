@@ -234,7 +234,15 @@ export const getCloudinaryDownloadUrl = (imageUrl: string | undefined, slug: str
   return imageUrl.replace("/image/upload/", `/image/upload/f_${format},fl_attachment:${filename}/`);
 };
 
-export const getArtworkShareUrl = (slug: string) => `https://inkprowl.github.io/inkprowl/art/${slug}/`;
+/**
+ * Static, crawler-visible artwork URL. A publication timestamp is included for a newly
+ * uploaded edition so social platforms request its freshly generated metadata rather than
+ * retaining an earlier cached card for the same archive path.
+ */
+export const getArtworkShareUrl = (slug: string, publicationVersion?: string) => {
+  const version = publicationVersion?.trim();
+  return `https://inkprowl.github.io/inkprowl/art/${slug}/${version ? `?v=${encodeURIComponent(version)}` : ""}`;
+};
 export const getGifShareUrl = (slug: string) => `https://inkprowl.github.io/inkprowl/gif/${slug}/`;
 
 /** The GIF download deliberately keeps the original animated asset; no format conversion is applied. */
