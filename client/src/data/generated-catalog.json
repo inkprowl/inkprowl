@@ -577,9 +577,9 @@
   "sponsoredCampaign": {
     "enabled": true,
     "label": "PRESENTED IN PARTNERSHIP",
-    "clientName": "Class Room",
+    "clientName": "Vid 20260911 Wa0004",
     "clientUrl": "https://client-site.example",
-    "videoUrl": "https://res.cloudinary.com/y1pc8ocl/video/upload/v1787428458/inkprowl/a0d383a5-6d13-4c2d-822b-6e1001f3835d/sponsor-video.mp4"
+    "videoUrl": "https://res.cloudinary.com/y1pc8ocl/video/upload/v1789126166/inkprowl/882f895d-2027-48c5-9281-b117596b3161/sponsor-video.mp4"
   },
   "advertisingSettings": {
     "adsenseEnabled": false,
@@ -642,9 +642,9 @@
       "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/video/upload/v1789125409/inkprowl/2bde4357-fe73-4d63-9f12-f44610accc8e/soundtrack.mp3"
     },
     "sponsoredCampaign:video": {
-      "publicId": "inkprowl/a0d383a5-6d13-4c2d-822b-6e1001f3835d/sponsor-video",
+      "publicId": "inkprowl/882f895d-2027-48c5-9281-b117596b3161/sponsor-video",
       "resourceType": "video",
-      "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/video/upload/v1787428458/inkprowl/a0d383a5-6d13-4c2d-822b-6e1001f3835d/sponsor-video.mp4"
+      "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/video/upload/v1789126166/inkprowl/882f895d-2027-48c5-9281-b117596b3161/sponsor-video.mp4"
     },
     "siteBranding:logo": {
       "publicId": "inkprowl/logo--gemini-generated-image-y81rlby81rlby81r_rpzd6q",
