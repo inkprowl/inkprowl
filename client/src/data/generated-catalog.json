@@ -564,8 +564,8 @@
   ],
   "gifOverrides": {},
   "siteMedia": {
-    "soundtrackTitle": "New Song",
-    "soundtrackUrl": "https://res.cloudinary.com/y1pc8ocl/video/upload/v1787301252/inkprowl/song--new-song-inkprowl_o6uhk0.mp3",
+    "soundtrackTitle": "Aud 20260910 Wa0004",
+    "soundtrackUrl": "https://res.cloudinary.com/y1pc8ocl/video/upload/v1789125382/inkprowl/20ef2e09-678d-4a0e-a8a0-7e0f960b5662/soundtrack.mp3",
     "soundtrackArtist": "INKPROWL"
   },
   "siteBranding": {
@@ -637,9 +637,9 @@
   },
   "assets": {
     "siteMedia:soundtrack": {
-      "publicId": "inkprowl/song--new-song-inkprowl_o6uhk0",
+      "publicId": "inkprowl/20ef2e09-678d-4a0e-a8a0-7e0f960b5662/soundtrack",
       "resourceType": "video",
-      "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/video/upload/v1787301252/inkprowl/song--new-song-inkprowl_o6uhk0.mp3"
+      "deliveryUrl": "https://res.cloudinary.com/y1pc8ocl/video/upload/v1789125382/inkprowl/20ef2e09-678d-4a0e-a8a0-7e0f960b5662/soundtrack.mp3"
     },
     "sponsoredCampaign:video": {
       "publicId": "inkprowl/a0d383a5-6d13-4c2d-822b-6e1001f3835d/sponsor-video",
